@@ -2,13 +2,19 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
 import devtools from 'solid-devtools/vite';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 
 export default defineConfig({
-  plugins: [devtools(), solidPlugin(), tailwindcss()],
-  server: {
-    port: 3000,
-  },
-  build: {
-    target: 'esnext',
-  },
+	plugins: [
+		tanstackRouter({ target: 'solid', autoCodeSplitting: true }),
+		devtools(),
+		solidPlugin(),
+		tailwindcss(),
+	],
+	server: {
+		port: 3000,
+	},
+	build: {
+		target: 'esnext',
+	},
 });
