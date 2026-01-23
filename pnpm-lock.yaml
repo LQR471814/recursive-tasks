@@ -14,9 +14,6 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.91.0
         version: 2.91.0
-      '@tanstack/electric-db-collection':
-        specifier: ^0.2.28
-        version: 0.2.28(typescript@5.9.3)
       '@tanstack/solid-db':
         specifier: ^0.2.3
         version: 0.2.3(solid-js@1.9.10)(typescript@5.9.3)
@@ -213,9 +210,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@electric-sql/client@1.4.1':
-    resolution: {integrity: sha512-gY/I2qOPj5he0tRX4CWVZ7fSU16ihqs5oHyySSFOdxC0mBoTecMm+tjF6FFJq/VySJblFJlCOA7OjdAG2WtCXA==}
-
   '@esbuild/aix-ppc64@0.27.2':
     resolution: {integrity: sha512-GZMB+a0mOMZs4MpDbj8RJp4cw+w1WV5NYD6xzgvzUJ5Ek2jerwfO2eADyI6ExDSUED+1X8aMbegahsJi+8mgpw==}
     engines: {node: '>=18'}
@@ -391,9 +385,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
-
-  '@microsoft/fetch-event-source@2.0.1':
-    resolution: {integrity: sha512-W6CLUJ2eBMw3Rec70qrsEW0jOm/3twwJv21mrmj2yORiaVmVYGS4sSS5yUwvQc1ZlDLYGPnClVWmUUMagKNsfA==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -656,9 +647,6 @@ packages:
     resolution: {integrity: sha512-/zO2K2hjkupL0DYHyPLnzEf3gFBlznUyZ+RLWBSFX4Dsf6jhjoGnAVZe6W25fZYyoZ5adb/PlhedHDqKO1u2rg==}
     peerDependencies:
       typescript: '>=4.7'
-
-  '@tanstack/electric-db-collection@0.2.28':
-    resolution: {integrity: sha512-d7D6dYFQSiHFemlL8fOR45ncRhadkK5CLIqozH7lJ/KjNQVrF2ZH0TmMaDbBeAqAbxQ04pXWgsZiaibZoRbbSQ==}
 
   '@tanstack/history@1.154.7':
     resolution: {integrity: sha512-YBgwS9qG4rs1ZY/ZrhQtjOH8BG9Qa2wf2AsxT/SnZ4HZJ1DcCEqkoiHH0yH6CYvdDit31X5HokOqQrRSsZEwGA==}
@@ -1756,12 +1744,6 @@ snapshots:
   '@biomejs/cli-win32-x64@2.3.11':
     optional: true
 
-  '@electric-sql/client@1.4.1':
-    dependencies:
-      '@microsoft/fetch-event-source': 2.0.1
-    optionalDependencies:
-      '@rollup/rollup-darwin-arm64': 4.56.0
-
   '@esbuild/aix-ppc64@0.27.2':
     optional: true
 
@@ -1862,8 +1844,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
-
-  '@microsoft/fetch-event-source@2.0.1': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -2119,17 +2099,6 @@ snapshots:
       '@tanstack/db-ivm': 0.1.17(typescript@5.9.3)
       '@tanstack/pacer-lite': 0.2.1
       typescript: 5.9.3
-
-  '@tanstack/electric-db-collection@0.2.28(typescript@5.9.3)':
-    dependencies:
-      '@electric-sql/client': 1.4.1
-      '@standard-schema/spec': 1.1.0
-      '@tanstack/db': 0.5.23(typescript@5.9.3)
-      '@tanstack/store': 0.8.0
-      debug: 4.4.3
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
 
   '@tanstack/history@1.154.7': {}
 

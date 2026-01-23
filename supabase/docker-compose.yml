@@ -533,17 +533,5 @@ services:
         "/app/bin/migrate && /app/bin/supavisor eval \"$$(cat /etc/pooler/pooler.exs)\" && /app/bin/server"
       ]
 
-  electric:
-    container_name: electric
-    image: electricsql/electric:latest
-    ports:
-      - 3000:3000
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@supabase-db:5432/postgres
-      ELECTRIC_SECRET: ${ELECTRIC_SECRET}
-
 volumes:
   db-config:
