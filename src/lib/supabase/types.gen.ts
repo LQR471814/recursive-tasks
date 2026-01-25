@@ -42,12 +42,12 @@ export type Database = {
         }
         Insert: {
           comments: string
-          id?: number
+          id?: never
           name: string
         }
         Update: {
           comments?: string
-          id?: number
+          id?: never
           name?: string
         }
         Relationships: []
@@ -70,7 +70,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "executor_occupied_executor_id_fkey"
+            foreignKeyName: "executor_occupied_executor_id_executor_id_fk"
             columns: ["executor_id"]
             isOneToOne: false
             referencedRelation: "executor"
@@ -81,84 +81,59 @@ export type Database = {
       task: {
         Row: {
           assigned_to: number | null
-          blocked_by: number | null
           comments: string
+          expected: number
           id: number
+          implementation: Database["public"]["Enums"]["implementation_type"]
           name: string
+          optimistic: number
           parent_id: number
-          status: Database["public"]["Enums"]["task_status"]
+          pessimistic: number
           timeframe_start: string
           timescale: Database["public"]["Enums"]["timescale_type"]
         }
         Insert: {
           assigned_to?: number | null
-          blocked_by?: number | null
           comments: string
+          expected: number
           id?: number
+          implementation: Database["public"]["Enums"]["implementation_type"]
           name: string
+          optimistic: number
           parent_id: number
-          status?: Database["public"]["Enums"]["task_status"]
+          pessimistic: number
           timeframe_start: string
           timescale: Database["public"]["Enums"]["timescale_type"]
         }
         Update: {
           assigned_to?: number | null
-          blocked_by?: number | null
           comments?: string
+          expected?: number
           id?: number
+          implementation?: Database["public"]["Enums"]["implementation_type"]
           name?: string
+          optimistic?: number
           parent_id?: number
-          status?: Database["public"]["Enums"]["task_status"]
+          pessimistic?: number
           timeframe_start?: string
           timescale?: Database["public"]["Enums"]["timescale_type"]
         }
         Relationships: [
           {
-            foreignKeyName: "task_assigned_to_fkey"
+            foreignKeyName: "task_assigned_to_executor_id_fk"
             columns: ["assigned_to"]
             isOneToOne: false
             referencedRelation: "executor"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "task_blocked_by_fkey"
-            columns: ["blocked_by"]
-            isOneToOne: false
-            referencedRelation: "task"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "task_parent_id_fkey"
+            foreignKeyName: "task_parent_id_task_id_fk"
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "task"
             referencedColumns: ["id"]
           },
         ]
-      }
-      unused_timescale: {
-        Row: {
-          id: number
-          multiplier: number
-          name: string
-          offset: number
-          scale_type: Database["public"]["Enums"]["timescale_type"]
-        }
-        Insert: {
-          id?: number
-          multiplier: number
-          name: string
-          offset: number
-          scale_type: Database["public"]["Enums"]["timescale_type"]
-        }
-        Update: {
-          id?: number
-          multiplier?: number
-          name?: string
-          offset?: number
-          scale_type?: Database["public"]["Enums"]["timescale_type"]
-        }
-        Relationships: []
       }
     }
     Views: {
@@ -168,7 +143,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      task_status: "pending" | "complete" | "dropped"
+      implementation_type: "children" | "hours"
       timescale_type:
         | "all_time"
         | "five_year"
@@ -308,7 +283,7 @@ export const Constants = {
   },
   public: {
     Enums: {
-      task_status: ["pending", "complete", "dropped"],
+      implementation_type: ["children", "hours"],
       timescale_type: [
         "all_time",
         "five_year",

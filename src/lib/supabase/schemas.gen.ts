@@ -6,10 +6,9 @@
 
 import { z } from "zod";
 
-export const publicTaskStatusSchema = z.union([
-  z.literal("pending"),
-  z.literal("complete"),
-  z.literal("dropped"),
+export const publicImplementationTypeSchema = z.union([
+  z.literal("children"),
+  z.literal("hours"),
 ]);
 
 export const publicTimescaleTypeSchema = z.union([
@@ -52,13 +51,13 @@ export const publicExecutorRowSchema = z.object({
 
 export const publicExecutorInsertSchema = z.object({
   comments: z.string(),
-  id: z.number().optional(),
+  id: z.never().optional(),
   name: z.string(),
 });
 
 export const publicExecutorUpdateSchema = z.object({
   comments: z.string().optional(),
-  id: z.number().optional(),
+  id: z.never().optional(),
   name: z.string().optional(),
 });
 
@@ -82,7 +81,7 @@ export const publicExecutorOccupiedUpdateSchema = z.object({
 
 export const publicExecutorOccupiedRelationshipsSchema = z.tuple([
   z.object({
-    foreignKeyName: z.literal("executor_occupied_executor_id_fkey"),
+    foreignKeyName: z.literal("executor_occupied_executor_id_executor_id_fk"),
     columns: z.tuple([z.literal("executor_id")]),
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("executor"),
@@ -92,57 +91,56 @@ export const publicExecutorOccupiedRelationshipsSchema = z.tuple([
 
 export const publicTaskRowSchema = z.object({
   assigned_to: z.number().nullable(),
-  blocked_by: z.number().nullable(),
   comments: z.string(),
+  expected: z.number(),
   id: z.number(),
+  implementation: publicImplementationTypeSchema,
   name: z.string(),
+  optimistic: z.number(),
   parent_id: z.number(),
-  status: publicTaskStatusSchema,
+  pessimistic: z.number(),
   timeframe_start: z.string(),
   timescale: publicTimescaleTypeSchema,
 });
 
 export const publicTaskInsertSchema = z.object({
   assigned_to: z.number().optional().nullable(),
-  blocked_by: z.number().optional().nullable(),
   comments: z.string(),
+  expected: z.number(),
   id: z.number().optional(),
+  implementation: publicImplementationTypeSchema,
   name: z.string(),
+  optimistic: z.number(),
   parent_id: z.number(),
-  status: publicTaskStatusSchema.optional(),
+  pessimistic: z.number(),
   timeframe_start: z.string(),
   timescale: publicTimescaleTypeSchema,
 });
 
 export const publicTaskUpdateSchema = z.object({
   assigned_to: z.number().optional().nullable(),
-  blocked_by: z.number().optional().nullable(),
   comments: z.string().optional(),
+  expected: z.number().optional(),
   id: z.number().optional(),
+  implementation: publicImplementationTypeSchema.optional(),
   name: z.string().optional(),
+  optimistic: z.number().optional(),
   parent_id: z.number().optional(),
-  status: publicTaskStatusSchema.optional(),
+  pessimistic: z.number().optional(),
   timeframe_start: z.string().optional(),
   timescale: publicTimescaleTypeSchema.optional(),
 });
 
 export const publicTaskRelationshipsSchema = z.tuple([
   z.object({
-    foreignKeyName: z.literal("task_assigned_to_fkey"),
+    foreignKeyName: z.literal("task_assigned_to_executor_id_fk"),
     columns: z.tuple([z.literal("assigned_to")]),
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("executor"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
   z.object({
-    foreignKeyName: z.literal("task_blocked_by_fkey"),
-    columns: z.tuple([z.literal("blocked_by")]),
-    isOneToOne: z.literal(false),
-    referencedRelation: z.literal("task"),
-    referencedColumns: z.tuple([z.literal("id")]),
-  }),
-  z.object({
-    foreignKeyName: z.literal("task_parent_id_fkey"),
+    foreignKeyName: z.literal("task_parent_id_task_id_fk"),
     columns: z.tuple([z.literal("parent_id")]),
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("task"),
@@ -150,31 +148,9 @@ export const publicTaskRelationshipsSchema = z.tuple([
   }),
 ]);
 
-export const publicUnusedTimescaleRowSchema = z.object({
-  id: z.number(),
-  multiplier: z.number(),
-  name: z.string(),
-  offset: z.number(),
-  scale_type: publicTimescaleTypeSchema,
-});
-
-export const publicUnusedTimescaleInsertSchema = z.object({
-  id: z.number().optional(),
-  multiplier: z.number(),
-  name: z.string(),
-  offset: z.number(),
-  scale_type: publicTimescaleTypeSchema,
-});
-
-export const publicUnusedTimescaleUpdateSchema = z.object({
-  id: z.number().optional(),
-  multiplier: z.number().optional(),
-  name: z.string().optional(),
-  offset: z.number().optional(),
-  scale_type: publicTimescaleTypeSchema.optional(),
-});
-
-export type PublicTaskStatus = z.infer<typeof publicTaskStatusSchema>;
+export type PublicImplementationType = z.infer<
+  typeof publicImplementationTypeSchema
+>;
 export type PublicTimescaleType = z.infer<typeof publicTimescaleTypeSchema>;
 export type Json = z.infer<typeof jsonSchema>;
 export type GraphqlPublicGraphqlArgs = z.infer<
@@ -203,13 +179,4 @@ export type PublicTaskInsert = z.infer<typeof publicTaskInsertSchema>;
 export type PublicTaskUpdate = z.infer<typeof publicTaskUpdateSchema>;
 export type PublicTaskRelationships = z.infer<
   typeof publicTaskRelationshipsSchema
->;
-export type PublicUnusedTimescaleRow = z.infer<
-  typeof publicUnusedTimescaleRowSchema
->;
-export type PublicUnusedTimescaleInsert = z.infer<
-  typeof publicUnusedTimescaleInsertSchema
->;
-export type PublicUnusedTimescaleUpdate = z.infer<
-  typeof publicUnusedTimescaleUpdateSchema
 >;
