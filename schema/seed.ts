@@ -9,21 +9,25 @@ const sql = postgres(
 const db = drizzle({ client: sql });
 
 async function main() {
-	await db.insert(taskTable).values([
-		{
-			name: "Root",
-			comments: "The root task which all tasks originate from.",
-			parent_id: 1,
-			assigned_to: null,
-			// the epoch
-			timeframe_start: new Date(0),
-			timescale: "all_time",
-			optimistic: 1,
-			expected: 1,
-			pessimistic: 1,
-			implementation: "children",
-		},
-	]);
+	await db
+		.insert(taskTable)
+		.values([
+			{
+				id: 1,
+				name: "Root",
+				comments: "The root task which all tasks originate from.",
+				parent_id: 1,
+				assigned_to: null,
+				// the epoch
+				timeframe_start: new Date(0),
+				timescale: "all_time",
+				optimistic: 1,
+				expected: 1,
+				pessimistic: 1,
+				implementation: "children",
+			},
+		])
+		.onConflictDoNothing();
 }
 
 main()

@@ -25,7 +25,7 @@ export const implementation_type = pgEnum("implementation_type", [
 ]);
 
 export const taskTable = pgTable("task", {
-	id: integer().primaryKey().generatedAlwaysAsIdentity(),
+	id: integer().primaryKey().generatedByDefaultAsIdentity(),
 	name: varchar({ length: 256 }).notNull(),
 	comments: varchar().notNull(),
 
