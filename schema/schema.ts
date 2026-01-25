@@ -24,11 +24,18 @@ export const implementation_type = pgEnum("implementation_type", [
 	"hours",
 ]);
 
+export const task_status = pgEnum("task_status", [
+	"pending",
+	"completed",
+	"dropped",
+]);
+
 export const taskTable = pgTable("task", {
 	id: integer().primaryKey().generatedByDefaultAsIdentity(),
 	name: varchar({ length: 256 }).notNull(),
 	comments: varchar().notNull(),
 
+	status: task_status().notNull().default("pending"),
 	timescale: timescale_type().notNull(),
 	timeframe_start: timestamp().notNull(),
 
