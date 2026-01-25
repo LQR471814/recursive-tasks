@@ -91,6 +91,7 @@ export const publicExecutorOccupiedRelationshipsSchema = z.tuple([
 
 export const publicTaskRowSchema = z.object({
   assigned_to: z.number().nullable(),
+  blocked_by: z.number().nullable(),
   comments: z.string(),
   expected: z.number(),
   id: z.number(),
@@ -105,6 +106,7 @@ export const publicTaskRowSchema = z.object({
 
 export const publicTaskInsertSchema = z.object({
   assigned_to: z.number().optional().nullable(),
+  blocked_by: z.number().optional().nullable(),
   comments: z.string(),
   expected: z.number(),
   id: z.number().optional(),
@@ -119,6 +121,7 @@ export const publicTaskInsertSchema = z.object({
 
 export const publicTaskUpdateSchema = z.object({
   assigned_to: z.number().optional().nullable(),
+  blocked_by: z.number().optional().nullable(),
   comments: z.string().optional(),
   expected: z.number().optional(),
   id: z.number().optional(),
@@ -137,6 +140,13 @@ export const publicTaskRelationshipsSchema = z.tuple([
     columns: z.tuple([z.literal("assigned_to")]),
     isOneToOne: z.literal(false),
     referencedRelation: z.literal("executor"),
+    referencedColumns: z.tuple([z.literal("id")]),
+  }),
+  z.object({
+    foreignKeyName: z.literal("task_blocked_by_task_id_fk"),
+    columns: z.tuple([z.literal("blocked_by")]),
+    isOneToOne: z.literal(false),
+    referencedRelation: z.literal("task"),
     referencedColumns: z.tuple([z.literal("id")]),
   }),
   z.object({

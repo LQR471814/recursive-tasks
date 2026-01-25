@@ -81,6 +81,7 @@ export type Database = {
       task: {
         Row: {
           assigned_to: number | null
+          blocked_by: number | null
           comments: string
           expected: number
           id: number
@@ -94,6 +95,7 @@ export type Database = {
         }
         Insert: {
           assigned_to?: number | null
+          blocked_by?: number | null
           comments: string
           expected: number
           id?: number
@@ -107,6 +109,7 @@ export type Database = {
         }
         Update: {
           assigned_to?: number | null
+          blocked_by?: number | null
           comments?: string
           expected?: number
           id?: number
@@ -124,6 +127,13 @@ export type Database = {
             columns: ["assigned_to"]
             isOneToOne: false
             referencedRelation: "executor"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_blocked_by_task_id_fk"
+            columns: ["blocked_by"]
+            isOneToOne: false
+            referencedRelation: "task"
             referencedColumns: ["id"]
           },
           {
