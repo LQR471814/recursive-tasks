@@ -14,6 +14,7 @@ import { Route as TestVerticalRouteImport } from './routes/test/vertical'
 import { Route as TestTaskDataTableRouteImport } from './routes/test/task-data-table'
 import { Route as TestResizableRouteImport } from './routes/test/resizable'
 import { Route as TestHorizontalRouteImport } from './routes/test/horizontal'
+import { Route as TestResizableCreateTaskRouteImport } from './routes/test/resizable/create-task'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,28 +41,36 @@ const TestHorizontalRoute = TestHorizontalRouteImport.update({
   path: '/test/horizontal',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TestResizableCreateTaskRoute = TestResizableCreateTaskRouteImport.update({
+  id: '/create-task',
+  path: '/create-task',
+  getParentRoute: () => TestResizableRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/test/horizontal': typeof TestHorizontalRoute
-  '/test/resizable': typeof TestResizableRoute
+  '/test/resizable': typeof TestResizableRouteWithChildren
   '/test/task-data-table': typeof TestTaskDataTableRoute
   '/test/vertical': typeof TestVerticalRoute
+  '/test/resizable/create-task': typeof TestResizableCreateTaskRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/test/horizontal': typeof TestHorizontalRoute
-  '/test/resizable': typeof TestResizableRoute
+  '/test/resizable': typeof TestResizableRouteWithChildren
   '/test/task-data-table': typeof TestTaskDataTableRoute
   '/test/vertical': typeof TestVerticalRoute
+  '/test/resizable/create-task': typeof TestResizableCreateTaskRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/test/horizontal': typeof TestHorizontalRoute
-  '/test/resizable': typeof TestResizableRoute
+  '/test/resizable': typeof TestResizableRouteWithChildren
   '/test/task-data-table': typeof TestTaskDataTableRoute
   '/test/vertical': typeof TestVerticalRoute
+  '/test/resizable/create-task': typeof TestResizableCreateTaskRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -71,6 +80,7 @@ export interface FileRouteTypes {
     | '/test/resizable'
     | '/test/task-data-table'
     | '/test/vertical'
+    | '/test/resizable/create-task'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -78,6 +88,7 @@ export interface FileRouteTypes {
     | '/test/resizable'
     | '/test/task-data-table'
     | '/test/vertical'
+    | '/test/resizable/create-task'
   id:
     | '__root__'
     | '/'
@@ -85,12 +96,13 @@ export interface FileRouteTypes {
     | '/test/resizable'
     | '/test/task-data-table'
     | '/test/vertical'
+    | '/test/resizable/create-task'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TestHorizontalRoute: typeof TestHorizontalRoute
-  TestResizableRoute: typeof TestResizableRoute
+  TestResizableRoute: typeof TestResizableRouteWithChildren
   TestTaskDataTableRoute: typeof TestTaskDataTableRoute
   TestVerticalRoute: typeof TestVerticalRoute
 }
@@ -132,13 +144,32 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof TestHorizontalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/test/resizable/create-task': {
+      id: '/test/resizable/create-task'
+      path: '/create-task'
+      fullPath: '/test/resizable/create-task'
+      preLoaderRoute: typeof TestResizableCreateTaskRouteImport
+      parentRoute: typeof TestResizableRoute
+    }
   }
 }
+
+interface TestResizableRouteChildren {
+  TestResizableCreateTaskRoute: typeof TestResizableCreateTaskRoute
+}
+
+const TestResizableRouteChildren: TestResizableRouteChildren = {
+  TestResizableCreateTaskRoute: TestResizableCreateTaskRoute,
+}
+
+const TestResizableRouteWithChildren = TestResizableRoute._addFileChildren(
+  TestResizableRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TestHorizontalRoute: TestHorizontalRoute,
-  TestResizableRoute: TestResizableRoute,
+  TestResizableRoute: TestResizableRouteWithChildren,
   TestTaskDataTableRoute: TestTaskDataTableRoute,
   TestVerticalRoute: TestVerticalRoute,
 }

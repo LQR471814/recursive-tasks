@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/solid-router";
-import * as HorizontalTimeframes  from "~/components/horizontal";
+import { createFileRoute, Outlet } from "@tanstack/solid-router";
+import * as HorizontalTimeframes from "~/components/horizontal";
 import {
 	Resizable,
 	ResizableHandle,
@@ -13,24 +13,27 @@ export const Route = createFileRoute("/test/resizable")({
 
 function RouteComponent() {
 	return (
-		<Resizable class="rounded-lg border">
-			<ResizablePanel initialSize={0.15} class="overflow-hidden">
-				<VerticalTimeframes />
-			</ResizablePanel>
-			<ResizableHandle withHandle />
-			<ResizablePanel initialSize={0.85} class="overflow-hidden">
-				<Resizable orientation="vertical">
-					<ResizablePanel initialSize={0.5} class="overflow-hidden">
-						<HorizontalTimeframes.Control />
-					</ResizablePanel>
-					<ResizableHandle withHandle />
-					<ResizablePanel initialSize={0.5} class="overflow-hidden">
-						<div class="flex h-full items-center justify-center p-6">
-							<span class="font-semibold">Properties</span>
-						</div>
-					</ResizablePanel>
-				</Resizable>
-			</ResizablePanel>
-		</Resizable>
+		<div class="w-full h-full relative">
+			<Resizable class="rounded-lg border">
+				<ResizablePanel initialSize={0.15} class="overflow-hidden">
+					<VerticalTimeframes />
+				</ResizablePanel>
+				<ResizableHandle withHandle />
+				<ResizablePanel initialSize={0.85} class="overflow-hidden">
+					<Resizable orientation="vertical">
+						<ResizablePanel initialSize={0.5} class="overflow-hidden">
+							<HorizontalTimeframes.Control />
+						</ResizablePanel>
+						<ResizableHandle withHandle />
+						<ResizablePanel initialSize={0.5} class="overflow-hidden">
+							<div class="flex h-full items-center justify-center p-6">
+								<span class="font-semibold">Properties</span>
+							</div>
+						</ResizablePanel>
+					</Resizable>
+				</ResizablePanel>
+			</Resizable>
+			<Outlet />
+		</div>
 	);
 }

@@ -1,9 +1,9 @@
-import { createEffect, createMemo, createSignal, For } from "solid-js";
+import { createMemo, createSignal, For } from "solid-js";
 import { Timeframe } from "~/components/timeframe";
 import * as timescales from "~/lib/timescales";
 import { cn, now } from "~/lib/utils";
-import * as Select from "./ui/select";
 import { Button } from "./ui/button";
+import * as Select from "./ui/select";
 
 const hierarchy = [
 	timescales.decade,
