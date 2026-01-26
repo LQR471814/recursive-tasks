@@ -140,6 +140,8 @@
 	display: none;
 }
 
-body, #root {
+:root,
+body,
+#root {
 	@apply h-full;
 }

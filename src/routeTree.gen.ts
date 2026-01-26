@@ -9,12 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerticalRouteImport } from './routes/vertical'
 import { Route as TaskDataTableRouteImport } from './routes/task-data-table'
+import { Route as HorizontalRouteImport } from './routes/horizontal'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VerticalRoute = VerticalRouteImport.update({
+  id: '/vertical',
+  path: '/vertical',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TaskDataTableRoute = TaskDataTableRouteImport.update({
   id: '/task-data-table',
   path: '/task-data-table',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HorizontalRoute = HorizontalRouteImport.update({
+  id: '/horizontal',
+  path: '/horizontal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,37 +37,59 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/horizontal': typeof HorizontalRoute
   '/task-data-table': typeof TaskDataTableRoute
+  '/vertical': typeof VerticalRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/horizontal': typeof HorizontalRoute
   '/task-data-table': typeof TaskDataTableRoute
+  '/vertical': typeof VerticalRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/horizontal': typeof HorizontalRoute
   '/task-data-table': typeof TaskDataTableRoute
+  '/vertical': typeof VerticalRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/task-data-table'
+  fullPaths: '/' | '/horizontal' | '/task-data-table' | '/vertical'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/task-data-table'
-  id: '__root__' | '/' | '/task-data-table'
+  to: '/' | '/horizontal' | '/task-data-table' | '/vertical'
+  id: '__root__' | '/' | '/horizontal' | '/task-data-table' | '/vertical'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HorizontalRoute: typeof HorizontalRoute
   TaskDataTableRoute: typeof TaskDataTableRoute
+  VerticalRoute: typeof VerticalRoute
 }
 
 declare module '@tanstack/solid-router' {
   interface FileRoutesByPath {
+    '/vertical': {
+      id: '/vertical'
+      path: '/vertical'
+      fullPath: '/vertical'
+      preLoaderRoute: typeof VerticalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/task-data-table': {
       id: '/task-data-table'
       path: '/task-data-table'
       fullPath: '/task-data-table'
       preLoaderRoute: typeof TaskDataTableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/horizontal': {
+      id: '/horizontal'
+      path: '/horizontal'
+      fullPath: '/horizontal'
+      preLoaderRoute: typeof HorizontalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,7 +104,9 @@ declare module '@tanstack/solid-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HorizontalRoute: HorizontalRoute,
   TaskDataTableRoute: TaskDataTableRoute,
+  VerticalRoute: VerticalRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

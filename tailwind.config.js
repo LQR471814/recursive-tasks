@@ -1,4 +1,5 @@
 import animate from "tailwindcss-animate";
+import containers from "@tailwindcss/container-queries"
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -102,5 +103,5 @@ export default {
 			},
 		},
 	},
-	plugins: [animate],
+	plugins: [animate, containers],
 };

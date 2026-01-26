@@ -3,18 +3,24 @@ import { createEffect } from "solid-js";
 
 export const Route = createRootRoute({
 	component: () => (
-		<div class="h-full">
+		<div class="grid grid-rows-[min-content,1fr] h-full">
 			<nav class="bg-gray-800 p-4">
 				<div class="flex gap-4 justify-center">
 					<Link to="/" class="text-white hover:text-gray-300">
 						Home
+					</Link>
+					<Link to="/horizontal" class="text-white hover:text-gray-300">
+						Horizontal
+					</Link>
+					<Link to="/vertical" class="text-white hover:text-gray-300">
+						Vertical
 					</Link>
 					<Link to="/task-data-table" class="text-white hover:text-gray-300">
 						Data Table
 					</Link>
 				</div>
 			</nav>
-			<main>
+			<main class="h-full overflow-y-auto">
 				<Outlet />
 			</main>
 			{/* TanStack Router Devtools not yet available for Solid */}

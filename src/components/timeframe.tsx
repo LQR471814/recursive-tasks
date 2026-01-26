@@ -40,18 +40,33 @@ export function Timeframe(props: {
 	const query = useLiveQuery((q) => q.from({ timeframeTasks }));
 
 	return (
-		<div class="border border-solid border-muted rounded-xl min-h-[200px] p-3 flex flex-col gap-3">
-			<p>{instance.name}</p>
-			<For each={query()}>
-				{(task) => (
-					<Chip
-						{...task}
-						onClick={() => {
-							console.log("clicked!");
-						}}
-					/>
-				)}
-			</For>
+		<div class="relative border border-muted rounded-xl flex flex-col min-w-[150px] min-h-[200px] max-h-[200px] overflow-y-auto">
+			<div class="sticky top-0 bg-background border-b border-muted px-2 py-1">
+				<p>{instance.name}</p>
+			</div>
+			<div class="flex flex-col gap-2 px-2 py-1">
+				<For each={query()}>
+					{(task) => (
+						<Chip
+							{...task}
+							onClick={() => {
+								console.log("clicked!");
+							}}
+						/>
+					)}
+				</For>
+				<p>item 1</p>
+				<p>item 1</p>
+				<p>item 1</p>
+				<p>item 1</p>
+				<p>item 1</p>
+				<p>item 1</p>
+				<p>item 1</p>
+				<p>item 1</p>
+				<p>item 1</p>
+				<p>item 1</p>
+				<p>item 1</p>
+			</div>
 		</div>
 	);
 }

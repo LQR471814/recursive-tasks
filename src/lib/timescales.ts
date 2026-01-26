@@ -239,3 +239,22 @@ export const month = new Month();
 export const week = new Week();
 export const day = new Day();
 export const daypart = new Daypart();
+
+export function* childInstancesOf(
+	parent: Timescale,
+	child: Timescale,
+	time: Temporal.ZonedDateTime,
+) {
+	const parentInstance = parent.instance(time);
+	const childInstance = child.instance(time);
+	const parentDuration = parentInstance.end.since(parentInstance.start);
+	const childDuration = childInstance.end.since(childInstance.start);
+	if (Temporal.Duration.compare(childDuration, parentDuration) > 0) {
+		throw new Error("child duration must not be smaller than parent duration");
+	}
+	let cursor = parentInstance.start;
+	while (Temporal.ZonedDateTime.compare(cursor, parentInstance.end) < 0) {
+		yield cursor;
+		cursor = cursor.add(childDuration);
+	}
+}
