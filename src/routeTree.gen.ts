@@ -9,89 +9,94 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VerticalRouteImport } from './routes/vertical'
-import { Route as TaskDataTableRouteImport } from './routes/task-data-table'
-import { Route as HorizontalRouteImport } from './routes/horizontal'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TestVerticalRouteImport } from './routes/test/vertical'
+import { Route as TestTaskDataTableRouteImport } from './routes/test/task-data-table'
+import { Route as TestResizableRouteImport } from './routes/test/resizable'
+import { Route as TestHorizontalRouteImport } from './routes/test/horizontal'
 
-const VerticalRoute = VerticalRouteImport.update({
-  id: '/vertical',
-  path: '/vertical',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TaskDataTableRoute = TaskDataTableRouteImport.update({
-  id: '/task-data-table',
-  path: '/task-data-table',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HorizontalRoute = HorizontalRouteImport.update({
-  id: '/horizontal',
-  path: '/horizontal',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TestVerticalRoute = TestVerticalRouteImport.update({
+  id: '/test/vertical',
+  path: '/test/vertical',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestTaskDataTableRoute = TestTaskDataTableRouteImport.update({
+  id: '/test/task-data-table',
+  path: '/test/task-data-table',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestResizableRoute = TestResizableRouteImport.update({
+  id: '/test/resizable',
+  path: '/test/resizable',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestHorizontalRoute = TestHorizontalRouteImport.update({
+  id: '/test/horizontal',
+  path: '/test/horizontal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/horizontal': typeof HorizontalRoute
-  '/task-data-table': typeof TaskDataTableRoute
-  '/vertical': typeof VerticalRoute
+  '/test/horizontal': typeof TestHorizontalRoute
+  '/test/resizable': typeof TestResizableRoute
+  '/test/task-data-table': typeof TestTaskDataTableRoute
+  '/test/vertical': typeof TestVerticalRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/horizontal': typeof HorizontalRoute
-  '/task-data-table': typeof TaskDataTableRoute
-  '/vertical': typeof VerticalRoute
+  '/test/horizontal': typeof TestHorizontalRoute
+  '/test/resizable': typeof TestResizableRoute
+  '/test/task-data-table': typeof TestTaskDataTableRoute
+  '/test/vertical': typeof TestVerticalRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/horizontal': typeof HorizontalRoute
-  '/task-data-table': typeof TaskDataTableRoute
-  '/vertical': typeof VerticalRoute
+  '/test/horizontal': typeof TestHorizontalRoute
+  '/test/resizable': typeof TestResizableRoute
+  '/test/task-data-table': typeof TestTaskDataTableRoute
+  '/test/vertical': typeof TestVerticalRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/horizontal' | '/task-data-table' | '/vertical'
+  fullPaths:
+    | '/'
+    | '/test/horizontal'
+    | '/test/resizable'
+    | '/test/task-data-table'
+    | '/test/vertical'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/horizontal' | '/task-data-table' | '/vertical'
-  id: '__root__' | '/' | '/horizontal' | '/task-data-table' | '/vertical'
+  to:
+    | '/'
+    | '/test/horizontal'
+    | '/test/resizable'
+    | '/test/task-data-table'
+    | '/test/vertical'
+  id:
+    | '__root__'
+    | '/'
+    | '/test/horizontal'
+    | '/test/resizable'
+    | '/test/task-data-table'
+    | '/test/vertical'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  HorizontalRoute: typeof HorizontalRoute
-  TaskDataTableRoute: typeof TaskDataTableRoute
-  VerticalRoute: typeof VerticalRoute
+  TestHorizontalRoute: typeof TestHorizontalRoute
+  TestResizableRoute: typeof TestResizableRoute
+  TestTaskDataTableRoute: typeof TestTaskDataTableRoute
+  TestVerticalRoute: typeof TestVerticalRoute
 }
 
 declare module '@tanstack/solid-router' {
   interface FileRoutesByPath {
-    '/vertical': {
-      id: '/vertical'
-      path: '/vertical'
-      fullPath: '/vertical'
-      preLoaderRoute: typeof VerticalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/task-data-table': {
-      id: '/task-data-table'
-      path: '/task-data-table'
-      fullPath: '/task-data-table'
-      preLoaderRoute: typeof TaskDataTableRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/horizontal': {
-      id: '/horizontal'
-      path: '/horizontal'
-      fullPath: '/horizontal'
-      preLoaderRoute: typeof HorizontalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -99,14 +104,43 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/test/vertical': {
+      id: '/test/vertical'
+      path: '/test/vertical'
+      fullPath: '/test/vertical'
+      preLoaderRoute: typeof TestVerticalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test/task-data-table': {
+      id: '/test/task-data-table'
+      path: '/test/task-data-table'
+      fullPath: '/test/task-data-table'
+      preLoaderRoute: typeof TestTaskDataTableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test/resizable': {
+      id: '/test/resizable'
+      path: '/test/resizable'
+      fullPath: '/test/resizable'
+      preLoaderRoute: typeof TestResizableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test/horizontal': {
+      id: '/test/horizontal'
+      path: '/test/horizontal'
+      fullPath: '/test/horizontal'
+      preLoaderRoute: typeof TestHorizontalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  HorizontalRoute: HorizontalRoute,
-  TaskDataTableRoute: TaskDataTableRoute,
-  VerticalRoute: VerticalRoute,
+  TestHorizontalRoute: TestHorizontalRoute,
+  TestResizableRoute: TestResizableRoute,
+  TestTaskDataTableRoute: TestTaskDataTableRoute,
+  TestVerticalRoute: TestVerticalRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

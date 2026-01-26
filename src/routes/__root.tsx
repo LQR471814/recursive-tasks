@@ -9,13 +9,13 @@ export const Route = createRootRoute({
 					<Link to="/" class="text-white hover:text-gray-300">
 						Home
 					</Link>
-					<Link to="/horizontal" class="text-white hover:text-gray-300">
+					<Link to="/test/horizontal" class="text-white hover:text-gray-300">
 						Horizontal
 					</Link>
-					<Link to="/vertical" class="text-white hover:text-gray-300">
+					<Link to="/test/vertical" class="text-white hover:text-gray-300">
 						Vertical
 					</Link>
-					<Link to="/task-data-table" class="text-white hover:text-gray-300">
+					<Link to="/test/task-data-table" class="text-white hover:text-gray-300">
 						Data Table
 					</Link>
 				</div>

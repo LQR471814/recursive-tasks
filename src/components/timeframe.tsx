@@ -9,9 +9,11 @@ import {
 import { For } from "solid-js";
 import { tasksCollection } from "~/lib/db";
 import type { Timescale } from "~/lib/timescales";
+import { cn } from "~/lib/utils";
 import { Chip } from "./task";
 
 export function Timeframe(props: {
+	class?: string;
 	timescale: Timescale;
 	time: Temporal.ZonedDateTime;
 }) {
@@ -40,7 +42,12 @@ export function Timeframe(props: {
 	const query = useLiveQuery((q) => q.from({ timeframeTasks }));
 
 	return (
-		<div class="relative border border-muted rounded-xl flex flex-col min-w-[150px] min-h-[200px] max-h-[200px] overflow-y-auto">
+		<div
+			class={cn(
+				"relative border border-muted rounded-lg flex flex-col min-h-[100px] overflow-y-auto",
+				props.class,
+			)}
+		>
 			<div class="sticky top-0 bg-background border-b border-muted px-2 py-1">
 				<p>{instance.name}</p>
 			</div>
@@ -55,18 +62,13 @@ export function Timeframe(props: {
 						/>
 					)}
 				</For>
-				<p>item 1</p>
-				<p>item 1</p>
-				<p>item 1</p>
-				<p>item 1</p>
-				<p>item 1</p>
-				<p>item 1</p>
-				<p>item 1</p>
-				<p>item 1</p>
-				<p>item 1</p>
-				<p>item 1</p>
-				<p>item 1</p>
 			</div>
+			{/* <Button */}
+			{/* 	class="absolute right-1 bottom-1 px-2 py-1 h-min w-min" */}
+			{/* 	variant="outline" */}
+			{/* > */}
+			{/* 	＋ */}
+			{/* </Button> */}
 		</div>
 	);
 }

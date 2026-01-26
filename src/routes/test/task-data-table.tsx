@@ -7,7 +7,7 @@ import {
 } from "@tanstack/solid-db";
 import { createFileRoute } from "@tanstack/solid-router";
 import type { ColumnDef } from "@tanstack/solid-table";
-import { Show } from "solid-js";
+import { Show, createEffect } from "solid-js";
 import { DataTable } from "~/components/ui/data-table";
 import { executorsCollection, tasksCollection } from "~/lib/db/tables";
 
@@ -66,7 +66,7 @@ const columns: ColumnDef<JoinedTask>[] = [
 	},
 ];
 
-export const Route = createFileRoute("/task-data-table")({
+export const Route = createFileRoute("/test/task-data-table")({
 	component: RouteComponent,
 });
 
@@ -77,6 +77,9 @@ function RouteComponent() {
 			.orderBy(({ joinedTasks }) => joinedTasks.name)
 			.limit(50),
 	)
+	createEffect(() => {
+		console.log(query())
+	})
 	return (
 		<Show when={!query.isLoading} fallback={<div>Loading...</div>}>
 			<DataTable columns={columns} data={query()} />
