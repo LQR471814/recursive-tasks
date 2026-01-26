@@ -65,7 +65,7 @@ export function Control() {
 
 	return (
 		<div class="flex flex-col h-full w-full">
-			<div class="flex gap-1 px-1 pt-1">
+			<div class="flex flex-wrap gap-1 px-1 pt-1">
 				<Select.Select
 					value={parent().name}
 					onChange={(value) => {
@@ -90,44 +90,46 @@ export function Control() {
 					</Select.SelectTrigger>
 					<Select.SelectContent />
 				</Select.Select>
-				<Button
-					class="text-primary/20"
-					variant="outline"
-					onClick={[
-						(duration: Temporal.Duration) => {
-							setOffset((prev) => prev.subtract(duration));
-						},
-						parentDuration(),
-					]}
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						fill="currentColor"
+				<div class="flex gap-1">
+					<Button
+						class="text-primary/20"
+						variant="outline"
+						onClick={[
+							(duration: Temporal.Duration) => {
+								setOffset((prev) => prev.subtract(duration));
+							},
+							parentDuration(),
+						]}
 					>
-						<title>Left Arrow</title>
-						<path d="M7.82843 10.9999H20V12.9999H7.82843L13.1924 18.3638L11.7782 19.778L4 11.9999L11.7782 4.22168L13.1924 5.63589L7.82843 10.9999Z"></path>
-					</svg>
-				</Button>
-				<Button
-					class="text-primary/20"
-					variant="outline"
-					onClick={[
-						(duration: Temporal.Duration) => {
-							setOffset((prev) => prev.add(duration));
-						},
-						parentDuration(),
-					]}
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						fill="currentColor"
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="currentColor"
+						>
+							<title>Left Arrow</title>
+							<path d="M7.82843 10.9999H20V12.9999H7.82843L13.1924 18.3638L11.7782 19.778L4 11.9999L11.7782 4.22168L13.1924 5.63589L7.82843 10.9999Z"></path>
+						</svg>
+					</Button>
+					<Button
+						class="text-primary/20"
+						variant="outline"
+						onClick={[
+							(duration: Temporal.Duration) => {
+								setOffset((prev) => prev.add(duration));
+							},
+							parentDuration(),
+						]}
 					>
-						<title>Right Arrow</title>
-						<path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
-					</svg>
-				</Button>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="currentColor"
+						>
+							<title>Right Arrow</title>
+							<path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+						</svg>
+					</Button>
+				</div>
 				<Button
 					class="text-primary/20"
 					variant="outline"

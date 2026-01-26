@@ -17,6 +17,7 @@ export function Timeframe(props: {
 	class?: string;
 	timescale: Timescale;
 	time: Temporal.ZonedDateTime;
+	collapsible?: boolean;
 }) {
 	const instance = props.timescale.instance(props.time);
 
