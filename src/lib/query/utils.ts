@@ -13,23 +13,23 @@ export function tableQueries<
 	Schema extends keyof DatabaseWithoutInternals,
 	TableName extends keyof DatabaseWithoutInternals[Schema]["Tables"],
 	__SelectRow extends
-	DatabaseWithoutInternals[Schema]["Tables"][TableName] extends {
-		Row: infer I;
-	}
-	? I
-	: never,
+		DatabaseWithoutInternals[Schema]["Tables"][TableName] extends {
+			Row: infer I;
+		}
+			? I
+			: never,
 	__InsertRow extends
-	DatabaseWithoutInternals[Schema]["Tables"][TableName] extends {
-		Insert: infer I;
-	}
-	? I
-	: never,
+		DatabaseWithoutInternals[Schema]["Tables"][TableName] extends {
+			Insert: infer I;
+		}
+			? I
+			: never,
 	__UpdateRow extends
-	DatabaseWithoutInternals[Schema]["Tables"][TableName] extends {
-		Update: infer I;
-	}
-	? I
-	: never,
+		DatabaseWithoutInternals[Schema]["Tables"][TableName] extends {
+			Update: infer I;
+		}
+			? I
+			: never,
 >(schema: Schema, table: TableName) {
 	const selectQuery = {
 		queryKey: ["supabase", table, "select"],

@@ -4,7 +4,7 @@ import { taskTable } from "./schema";
 
 const sql = postgres(
 	process.env.DB_URL ??
-	"postgresql://postgres:postgres@127.0.0.1:54322/postgres",
+		"postgresql://postgres:postgres@127.0.0.1:54322/postgres",
 );
 const db = drizzle({ client: sql });
 

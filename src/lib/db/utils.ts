@@ -16,11 +16,11 @@ export function tableQueryCollection<
 	Schema extends StandardSchema<unknown>,
 	__Row extends ReturnType<
 		T["select"]["queryFn"] extends (variables: any) => any
-		? T["select"]["queryFn"]
-		: () => never
+			? T["select"]["queryFn"]
+			: () => never
 	> extends Promise<(infer U)[]>
-	? U
-	: never,
+		? U
+		: never,
 >(table: T, getKey: GetKey, schema: Schema) {
 	return createCollection(
 		queryCollectionOptions<
@@ -54,4 +54,3 @@ export function tableQueryCollection<
 		} as any),
 	);
 }
-

@@ -7,7 +7,7 @@ import {
 } from "@tanstack/solid-db";
 import { createFileRoute } from "@tanstack/solid-router";
 import type { ColumnDef } from "@tanstack/solid-table";
-import { Show, createEffect } from "solid-js";
+import { createEffect, Show } from "solid-js";
 import { DataTable } from "~/components/ui/data-table";
 import { executorsCollection, tasksCollection } from "~/lib/db/tables";
 
@@ -76,13 +76,13 @@ function RouteComponent() {
 			.from({ joinedTasks })
 			.orderBy(({ joinedTasks }) => joinedTasks.name)
 			.limit(50),
-	)
+	);
 	createEffect(() => {
-		console.log(query())
-	})
+		console.log(query());
+	});
 	return (
 		<Show when={!query.isLoading} fallback={<div>Loading...</div>}>
 			<DataTable columns={columns} data={query()} />
 		</Show>
-	)
+	);
 }

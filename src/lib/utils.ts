@@ -17,4 +17,4 @@ createRoot(() => {
 		};
 	});
 });
-export { now }
+export { now };

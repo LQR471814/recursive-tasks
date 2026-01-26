@@ -9,14 +9,13 @@
 			"./*.ts",
 			"./schema/**",
 			"./src/**",
-			"!**/*.gen.ts"
+			"!**/*.gen.ts",
+			"!!**/volumes"
 		]
 	},
 	"overrides": [
 		{
-			"includes": [
-				"./src/**/*.css"
-			],
+			"includes": ["./src/**/*.css"],
 			"linter": {
 				"rules": {
 					"suspicious": {

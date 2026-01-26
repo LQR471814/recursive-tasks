@@ -15,7 +15,10 @@ export const Route = createRootRoute({
 					<Link to="/test/vertical" class="text-white hover:text-gray-300">
 						Vertical
 					</Link>
-					<Link to="/test/task-data-table" class="text-white hover:text-gray-300">
+					<Link
+						to="/test/task-data-table"
+						class="text-white hover:text-gray-300"
+					>
 						Data Table
 					</Link>
 				</div>

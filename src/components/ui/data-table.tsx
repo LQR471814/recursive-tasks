@@ -23,6 +23,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>(props: DataTableProps<TData, TValue>) {
 	const table = createSolidTable({
 		get data() {
+			console.log(props.data);
 			return props.data;
 		},
 		get columns() {

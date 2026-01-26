@@ -6,5 +6,5 @@ export const supabase = createClient<Database>(
 	import.meta.env.VITE_SUPABASE_ANON_KEY,
 );
 
-export type { Database }
+export type { Database };
 export * from "./schemas.gen";

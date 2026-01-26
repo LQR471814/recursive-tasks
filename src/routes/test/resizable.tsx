@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/solid-router'
+import { createFileRoute } from "@tanstack/solid-router";
 
-export const Route = createFileRoute('/test/resizable')({
-  component: RouteComponent,
-})
+export const Route = createFileRoute("/test/resizable")({
+	component: RouteComponent,
+});
 
 function RouteComponent() {
-  return <div>Hello "/test/resizable"!</div>
+	return <div>Hello "/test/resizable"!</div>;
 }
