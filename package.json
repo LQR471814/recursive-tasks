@@ -34,6 +34,7 @@
 	},
 	"dependencies": {
 		"@biomejs/biome": "^2.3.11",
+		"@corvu/resizable": "^0.2.5",
 		"@kobalte/core": "^0.13.11",
 		"@supabase/supabase-js": "^2.91.0",
 		"@tanstack/query-db-collection": "^1.0.20",
