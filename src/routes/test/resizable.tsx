@@ -5,8 +5,11 @@ import {
 	ResizableHandle,
 	ResizablePanel,
 } from "~/components/ui/resizable";
+import { Separator } from "~/components/ui/separator";
 import { VerticalTimeframes } from "~/components/vertical";
+import { ViewController } from "~/components/view-controller";
 import { CurrentTaskProvider } from "~/context/current-task";
+import { ViewProvider } from "~/context/view";
 
 export const Route = createFileRoute("/test/resizable")({
 	component: RouteComponent,
@@ -14,28 +17,36 @@ export const Route = createFileRoute("/test/resizable")({
 
 function RouteComponent() {
 	return (
-		<CurrentTaskProvider>
-			<div class="w-full h-full relative">
-				<Resizable class="rounded-lg border">
-					<ResizablePanel initialSize={0.15} class="overflow-hidden">
-						<VerticalTimeframes />
+		<ViewProvider>
+			<CurrentTaskProvider>
+				<Resizable orientation="vertical" class="rounded-lg border h-full">
+					<ResizablePanel>
+						<ViewController />
 					</ResizablePanel>
-					<ResizableHandle withHandle />
-					<ResizablePanel initialSize={0.85} class="overflow-hidden">
-						<Resizable orientation="vertical">
-							<ResizablePanel initialSize={0.5} class="overflow-hidden">
-								<HorizontalTimeframes.Control />
+					<Separator class="h-0" />
+					<ResizablePanel>
+						<Resizable orientation="horizontal">
+							<ResizablePanel initialSize={0.15} class="overflow-hidden">
+								<VerticalTimeframes />
 							</ResizablePanel>
 							<ResizableHandle withHandle />
-							<ResizablePanel initialSize={0.5} class="overflow-hidden">
-								<div class="flex h-full items-center justify-center p-6">
-									<span class="font-semibold">Properties</span>
-								</div>
+							<ResizablePanel initialSize={0.85} class="overflow-hidden">
+								<Resizable orientation="vertical">
+									<ResizablePanel initialSize={0.5} class="overflow-hidden">
+										<HorizontalTimeframes.Controlled />
+									</ResizablePanel>
+									<ResizableHandle withHandle />
+									<ResizablePanel initialSize={0.5} class="overflow-hidden">
+										<div class="flex h-full items-center justify-center p-6">
+											<span class="font-semibold">Properties</span>
+										</div>
+									</ResizablePanel>
+								</Resizable>
 							</ResizablePanel>
 						</Resizable>
 					</ResizablePanel>
 				</Resizable>
-			</div>
-		</CurrentTaskProvider>
+			</CurrentTaskProvider>
+		</ViewProvider>
 	);
 }

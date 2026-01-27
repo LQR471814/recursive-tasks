@@ -6,5 +6,5 @@ export const Route = createFileRoute("/test/horizontal")({
 });
 
 function RouteComponent() {
-	return <HorizontalTimeframes.Control />;
+	return <HorizontalTimeframes.Controlled />;
 }

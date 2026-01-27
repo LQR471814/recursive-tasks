@@ -1,3 +1,5 @@
+import { now } from "./utils";
+
 export interface Timescale {
 	name: string;
 	instance(now: Temporal.ZonedDateTime): TimescaleInstance;
@@ -69,51 +71,49 @@ export class Year implements Timescale {
 	}
 }
 
-export class Semester implements Timescale {
-	name = "Semester";
+export class MultiMonth implements Timescale {
+	private multiplier: number;
+	name: string;
+	symbol: string;
 
-	private getSemester(now: Temporal.ZonedDateTime) {
-		return Math.ceil(now.month / 6);
+	constructor(multiplier: number, symbol: string) {
+		this.multiplier = multiplier;
+		this.name = `${this.multiplier} Months`;
+		this.symbol = symbol;
+	}
+
+	private instanceNumber(now: Temporal.ZonedDateTime) {
+		return Math.floor((now.month - 1) / this.multiplier);
 	}
 
 	instance(now: Temporal.ZonedDateTime): TimescaleInstance {
-		const semester = this.getSemester(now);
+		const no = this.instanceNumber(now);
 		const start = Temporal.ZonedDateTime.from({
 			year: now.year,
-			month: 1 + (semester - 1) * 6,
+			month: 1 + no * this.multiplier,
 			day: 1,
 			timeZone: now.timeZoneId,
 		});
-		const end = start.add({ months: 6 });
+		const end = start.add({ months: this.multiplier });
 		return {
-			name: `H${semester}`,
+			name: `${this.symbol}${no + 1}`,
 			start,
 			end,
 		};
 	}
 }
 
-export class Quarter implements Timescale {
-	name = "Quarter";
-
-	private getQuarter(now: Temporal.ZonedDateTime) {
-		return Math.ceil(now.month / 3);
+export class Semester extends MultiMonth {
+	name = "Semester";
+	constructor() {
+		super(6, "S");
 	}
+}
 
-	instance(now: Temporal.ZonedDateTime): TimescaleInstance {
-		const quarter = this.getQuarter(now);
-		const start = Temporal.ZonedDateTime.from({
-			year: now.year,
-			month: 1 + (quarter - 1) * 3,
-			day: 1,
-			timeZone: now.timeZoneId,
-		});
-		const end = start.add({ months: 3 });
-		return {
-			name: `Q${quarter}`,
-			start,
-			end,
-		};
+export class Quarter extends MultiMonth {
+	name = "Quarter";
+	constructor() {
+		super(3, "Q");
 	}
 }
 
@@ -174,12 +174,12 @@ export class Daypart implements Timescale {
 		end: number;
 		name: string;
 	}[] = [
-		{ start: 0, end: 5, name: "Night" },
-		{ start: 5, end: 12, name: "Morning" },
-		{ start: 12, end: 17, name: "Afternoon" },
-		{ start: 17, end: 21, name: "Evening" },
-		{ start: 21, end: 24, name: "Night" },
-	];
+			{ start: 0, end: 5, name: "Night" },
+			{ start: 5, end: 12, name: "Morning" },
+			{ start: 12, end: 17, name: "Afternoon" },
+			{ start: 17, end: 21, name: "Evening" },
+			{ start: 21, end: 24, name: "Night" },
+		];
 
 	private getDaypart(now: Temporal.ZonedDateTime) {
 		for (const p of Daypart.partitions) {
@@ -246,15 +246,28 @@ export function* childInstancesOf(
 	time: Temporal.ZonedDateTime,
 ) {
 	const parentInstance = parent.instance(time);
-	const childInstance = child.instance(time);
-	const parentDuration = parentInstance.end.since(parentInstance.start);
-	const childDuration = childInstance.end.since(childInstance.start);
-	if (Temporal.Duration.compare(childDuration, parentDuration) > 0) {
-		throw new Error("child duration must not be smaller than parent duration");
-	}
 	let cursor = parentInstance.start;
 	while (Temporal.ZonedDateTime.compare(cursor, parentInstance.end) < 0) {
 		yield cursor;
+		const childInstance = child.instance(cursor);
+		const childDuration = childInstance.end.since(childInstance.start);
 		cursor = cursor.add(childDuration);
 	}
 }
+
+export function durationOf(timescale: Timescale) {
+	const instance = timescale.instance(now());
+	return instance.end.since(instance.start);
+}
+
+export const hierarchy = [
+	decade,
+	fiveyear,
+	year,
+	semester,
+	quarter,
+	month,
+	week,
+	day,
+	daypart,
+];
