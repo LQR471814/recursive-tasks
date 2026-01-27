@@ -233,7 +233,6 @@ function startOfDay(now: Temporal.ZonedDateTime) {
 export const decade = new Decade();
 export const fiveyear = new FiveYear();
 export const year = new Year();
-export const semester = new Semester();
 export const quarter = new Quarter();
 export const month = new Month();
 export const week = new Week();
@@ -247,6 +246,7 @@ export function* childInstancesOf(
 ) {
 	const parentInstance = parent.instance(time);
 	let cursor = parentInstance.start;
+
 	while (Temporal.ZonedDateTime.compare(cursor, parentInstance.end) < 0) {
 		yield cursor;
 		const childInstance = child.instance(cursor);
@@ -264,7 +264,6 @@ export const hierarchy = [
 	decade,
 	fiveyear,
 	year,
-	semester,
 	quarter,
 	month,
 	week,
