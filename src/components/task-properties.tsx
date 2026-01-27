@@ -1,17 +1,19 @@
+// biome-ignore-all lint/suspicious/noExplicitAny: lots of typescript shenanigans happening here
+
 import {
+	type Collection,
 	createCollection,
-	useLiveQuery,
 	eq,
 	liveQueryCollectionOptions,
-	type Collection,
+	useLiveQuery,
 } from "@tanstack/solid-db";
-import { tasksCollection } from "~/lib/db";
-import { timescaleTypeOf, type TimescaleInstance } from "~/lib/timescales";
 import {
-	createForm,
 	type AnyFieldApi,
+	createForm,
 	type FieldApi,
 } from "@tanstack/solid-form";
+import { tasksCollection } from "~/lib/db";
+import { type TimescaleInstance, timescaleTypeOf } from "~/lib/timescales";
 import { FieldInfo } from "./field-info";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import {
@@ -105,8 +107,8 @@ function FormTextField<
 		any,
 		any
 	>
-	? U
-	: never,
+		? U
+		: never,
 >(props: {
 	field: T;
 	transform: (text: string) => __Return;
