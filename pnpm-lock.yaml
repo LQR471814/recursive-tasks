@@ -47,6 +47,9 @@ importers:
       '@thisbeyond/solid-dnd':
         specifier: ^0.7.5
         version: 0.7.5(solid-js@1.9.10)
+      solid-icons:
+        specifier: ^1.2.0
+        version: 1.2.0(solid-js@1.9.10)
       solid-js:
         specifier: ^1.9.9
         version: 1.9.10
@@ -2556,6 +2559,11 @@ packages:
     resolution: {integrity: sha512-LTyNki6GUJPRLXV5uMWPkYClB07SUMubbr2EkAddiR0CJCF/I283txilMU9RURSr/P8EewMfXWu2o3aWrK7A5A==}
     peerDependencies:
       solid-js: ^1.8
+
+  solid-icons@1.2.0:
+    resolution: {integrity: sha512-yjQxWQMi9l19P5Af9vjsvalTMDFPDL4XD6etrUdNxNVhFp1bMYF0SFwUa5VYDfJ7u0SF3Qkz/F7BZxqcLUwklw==}
+    peerDependencies:
+      solid-js: '*'
 
   solid-js@1.9.10:
     resolution: {integrity: sha512-Coz956cos/EPDlhs6+jsdTxKuJDPT7B5SVIWgABwROyxjY7Xbr8wkzD68Et+NxnV7DLJ3nJdAC2r9InuV/4Jew==}
@@ -5348,6 +5356,10 @@ snapshots:
   solid-focus-trap@0.1.9(solid-js@1.9.10):
     dependencies:
       '@corvu/utils': 0.4.2(solid-js@1.9.10)
+      solid-js: 1.9.10
+
+  solid-icons@1.2.0(solid-js@1.9.10):
+    dependencies:
       solid-js: 1.9.10
 
   solid-js@1.9.10:
