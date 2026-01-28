@@ -36,15 +36,13 @@ function currentTaskValue() {
 				name: "",
 				comments: "",
 				implementation: "hours",
-				status: "pending",
 				optimistic: 0,
 				expected: 0,
 				pessimistic: 0,
 				timeframe_start: Temporal.Now.zonedDateTimeISO(),
 				timescale: "week",
-				parent_id: -1,
+				parent_id: 1,
 				assigned_to: null,
-				blocked_by: null,
 			} as TaskFields,
 			onSubmit: ({ value }) => {
 				if (selectedTaskId() !== undefined) {

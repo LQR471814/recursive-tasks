@@ -20,18 +20,13 @@ const joinedTasks = createCollection(
 				.leftJoin({ executor: executorsCollection }, ({ task, executor }) =>
 					eq(task.assigned_to, executor.id),
 				)
-				.leftJoin({ blocker: tasksCollection }, ({ task, blocker }) =>
-					eq(task.blocked_by, blocker.id),
-				)
 				.innerJoin({ parent: tasksCollection }, ({ task, parent }) =>
 					eq(task.parent_id, parent.id),
 				)
-				.select(({ task, executor, blocker, parent }) => ({
+				.select(({ task, executor,  parent }) => ({
 					name: task.name,
 					comments: task.comments,
-					status: task.status,
 					assigned: executor?.name ?? "-",
-					blocker: blocker?.name ?? "-",
 					parent: parent.name,
 				})),
 	}),
@@ -45,20 +40,12 @@ const columns: ColumnDef<JoinedTask>[] = [
 		header: "Name",
 	},
 	{
-		accessorKey: "status",
-		header: "Status",
-	},
-	{
 		accessorKey: "comments",
 		header: "Comments",
 	},
 	{
 		accessorKey: "assigned",
 		header: "Assigned",
-	},
-	{
-		accessorKey: "blocker",
-		header: "Blocked By",
 	},
 	{
 		accessorKey: "parent",

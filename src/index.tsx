@@ -5,6 +5,10 @@ import { render } from "solid-js/web";
 import "solid-devtools";
 import { createRouter, RouterProvider } from "@tanstack/solid-router";
 import { routeTree } from "./routeTree.gen";
+import "solid-devtools";
+import { attachDevtoolsOverlay } from "@solid-devtools/overlay";
+
+attachDevtoolsOverlay();
 
 const router = createRouter({ routeTree });
 

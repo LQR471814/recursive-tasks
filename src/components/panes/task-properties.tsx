@@ -1,7 +1,9 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: lots of typescript shenanigans happening here
 
+import { eq, useLiveQuery } from "@tanstack/solid-db";
 import type { AnyFieldApi, FieldApi } from "@tanstack/solid-form";
-import { createEffect, Match, Switch, useContext } from "solid-js";
+import { createEffect, createMemo, Match, Switch, useContext } from "solid-js";
+import { tasksCollection } from "src/lib/db";
 import { type Timescale, timescaleFromType } from "src/lib/timescales";
 import {
 	CurrentTaskContext,
@@ -9,6 +11,9 @@ import {
 } from "~/context/current-task";
 import { FieldInfo } from "../field-info";
 import { TimeDisplay } from "../time-display";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Search } from "../ui/search";
 import { Separator } from "../ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import {
@@ -18,8 +23,6 @@ import {
 	TextFieldLabel,
 	TextFieldTextArea,
 } from "../ui/text-field";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
 
 function FormMultilineText(props: {
 	field: FieldApi<
@@ -282,6 +285,46 @@ function FormFields(props: {
 						</Tabs>
 					</div>
 				)}
+			/>
+
+			<form.Field
+				name="parent_id"
+				children={(field) => {
+					const parentOptions = useLiveQuery((q) =>
+						q.from({ tasks: tasksCollection }),
+					);
+					const parentQuery = useLiveQuery((q) =>
+						q
+							.from({ tasks: tasksCollection })
+							.where(({ tasks }) => eq(tasks.id, field().state.value)),
+					);
+					const parent = createMemo(() => parentQuery()[0]);
+					createEffect(() => {
+						console.log(parentOptions());
+					});
+					return (
+						<div class="max-w-[220px]">
+							<label class="text-sm font-medium" for={field().name}>
+								Parent
+							</label>
+							<Search
+								name={field().name}
+								options={parentOptions()}
+								selected={parent()}
+								idField="id"
+								labelField="name"
+								onChange={(newParent) => {
+									if (!newParent) {
+										// root id
+										field().handleChange(1);
+										return;
+									}
+									field().handleChange(newParent.id);
+								}}
+							/>
+						</div>
+					);
+				}}
 			/>
 		</>
 	);
