@@ -1,7 +1,7 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: lots of typescript shenanigans happening here
 
 import type { AnyFieldApi, FieldApi } from "@tanstack/solid-form";
-import { Match, Switch, useContext } from "solid-js";
+import { Show, Match, Switch, useContext } from "solid-js";
 import { CurrentTaskContext } from "~/context/current-task";
 import { FieldInfo } from "../field-info";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
@@ -12,6 +12,7 @@ import {
 	TextFieldLabel,
 	TextFieldTextArea,
 } from "../ui/text-field";
+import { Separator } from "../ui/separator";
 
 function FormMultilineText(props: {
 	field: FieldApi<
@@ -85,8 +86,8 @@ function FormTextField<
 		any,
 		any
 	>
-		? U
-		: never,
+	? U
+	: never,
 >(props: {
 	field: T;
 	transform: (text: string) => __Return;
@@ -121,172 +122,190 @@ function Fields() {
 			</p>
 		);
 	}
+
 	const form = ctx.form;
-	return (
-		<Switch fallback={<p class="m-auto">No task selected.</p>}>
-			<Match when={ctx.shown() === "selected" || ctx.shown() === "new_child"}>
-				<div class="flex flex-col flex-wrap gap-2">
-					<form.Field
-						name="name"
-						validators={{
-							onChange: ({ value }) =>
-								!value ? "Name is required" : undefined,
-						}}
-						children={(field) => (
-							<FormTextField
-								field={field()}
-								transform={(v) => v}
-								label="Name"
-								type="text"
-								placeholder="Task 1"
-							/>
-						)}
-					/>
-					<form.Field
-						name="comments"
-						children={(field) => (
-							<FormMultilineText
-								field={field()}
-								label="Comments"
-								placeholder="Comments..."
-							/>
-						)}
-					/>
 
-					<form.Field
-						name="implementation"
-						children={(field) => (
-							<div>
-								<p class="text-sm font-medium">Estimate</p>
-								<Tabs
-									onChange={(value) => {
-										switch (value) {
-											case "hours":
-											case "children":
-												field().handleChange(value);
-										}
+	const formFields = (
+		<>
+			<form.Field
+				name="name"
+				validators={{
+					onChange: ({ value }) => (!value ? "Name is required" : undefined),
+				}}
+				children={(field) => (
+					<FormTextField
+						field={field()}
+						transform={(v) => v}
+						label="Name"
+						type="text"
+						placeholder="Task 1"
+					/>
+				)}
+			/>
+			<form.Field
+				name="comments"
+				children={(field) => (
+					<FormMultilineText
+						field={field()}
+						label="Comments"
+						placeholder="Comments..."
+					/>
+				)}
+			/>
+
+			<form.Field
+				name="implementation"
+				children={(field) => (
+					<div>
+						<p class="text-sm font-medium">Estimate</p>
+						<Tabs
+							onChange={(value) => {
+								switch (value) {
+									case "hours":
+									case "children":
+										field().handleChange(value);
+								}
+							}}
+							defaultValue={field().state.value}
+							class="w-[400px]"
+						>
+							<TabsList class="grid w-full grid-cols-2">
+								<TabsTrigger value="hours">Hours</TabsTrigger>
+								<TabsTrigger value="children">Children</TabsTrigger>
+							</TabsList>
+							<TabsContent class="flex gap-2" value="hours">
+								<form.Field
+									name="optimistic"
+									validators={{
+										onChange: ({ value }) =>
+											Number.isNaN(value) ? "Not a number!" : undefined,
 									}}
-									defaultValue={field().state.value}
-									class="w-[400px]"
-								>
-									<TabsList class="grid w-full grid-cols-2">
-										<TabsTrigger value="hours">Hours</TabsTrigger>
-										<TabsTrigger value="children">Children</TabsTrigger>
-									</TabsList>
-									<TabsContent class="flex gap-2" value="hours">
-										<form.Field
-											name="optimistic"
-											validators={{
-												onChange: ({ value }) =>
-													Number.isNaN(value) ? "Not a number!" : undefined,
-											}}
-											children={(field) => (
-												<FormTextField
-													field={field()}
-													transform={(v) => parseFloat(v)}
-													label="Optimistic"
-													type="text"
-													placeholder="Hours"
-												/>
-											)}
+									children={(field) => (
+										<FormTextField
+											field={field()}
+											transform={(v) => parseFloat(v)}
+											label="Optimistic"
+											type="text"
+											placeholder="Hours"
 										/>
-										<form.Field
-											name="expected"
-											validators={{
-												onChange: ({ value }) =>
-													Number.isNaN(value) ? "Not a number!" : undefined,
-											}}
-											children={(field) => (
-												<FormTextField
-													field={field()}
-													transform={(v) => parseFloat(v)}
-													label="Expected"
-													type="text"
-													placeholder="Hours"
-												/>
-											)}
+									)}
+								/>
+								<form.Field
+									name="expected"
+									validators={{
+										onChange: ({ value }) =>
+											Number.isNaN(value) ? "Not a number!" : undefined,
+									}}
+									children={(field) => (
+										<FormTextField
+											field={field()}
+											transform={(v) => parseFloat(v)}
+											label="Expected"
+											type="text"
+											placeholder="Hours"
 										/>
-										<form.Field
-											name="pessimistic"
-											validators={{
-												onChange: ({ value }) =>
-													Number.isNaN(value) ? "Not a number!" : undefined,
-											}}
-											children={(field) => (
-												<FormTextField
-													field={field()}
-													transform={(v) => parseFloat(v)}
-													label="Pessimistic"
-													type="text"
-													placeholder="Hours"
-												/>
-											)}
+									)}
+								/>
+								<form.Field
+									name="pessimistic"
+									validators={{
+										onChange: ({ value }) =>
+											Number.isNaN(value) ? "Not a number!" : undefined,
+									}}
+									children={(field) => (
+										<FormTextField
+											field={field()}
+											transform={(v) => parseFloat(v)}
+											label="Pessimistic"
+											type="text"
+											placeholder="Hours"
 										/>
-									</TabsContent>
+									)}
+								/>
+							</TabsContent>
 
-									<TabsContent class="flex gap-2" value="children">
-										<form.Field
-											name="pessimistic"
-											validators={{
-												onChange: ({ value }) =>
-													Number.isNaN(value) ? "Not a number!" : undefined,
-											}}
-											children={(field) => (
-												<FormTextField
-													field={field()}
-													transform={(v) => parseFloat(v)}
-													label="Least %"
-													type="text"
-													placeholder="Percentage"
-												/>
-											)}
+							<TabsContent class="flex gap-2" value="children">
+								<form.Field
+									name="pessimistic"
+									validators={{
+										onChange: ({ value }) =>
+											Number.isNaN(value) ? "Not a number!" : undefined,
+									}}
+									children={(field) => (
+										<FormTextField
+											field={field()}
+											transform={(v) => parseFloat(v)}
+											label="Least %"
+											type="text"
+											placeholder="Percentage"
 										/>
-										<form.Field
-											name="expected"
-											validators={{
-												onChange: ({ value }) =>
-													Number.isNaN(value) ? "Not a number!" : undefined,
-											}}
-											children={(field) => (
-												<FormTextField
-													field={field()}
-													transform={(v) => parseFloat(v)}
-													label="Average %"
-													type="text"
-													placeholder="Percentage"
-												/>
-											)}
+									)}
+								/>
+								<form.Field
+									name="expected"
+									validators={{
+										onChange: ({ value }) =>
+											Number.isNaN(value) ? "Not a number!" : undefined,
+									}}
+									children={(field) => (
+										<FormTextField
+											field={field()}
+											transform={(v) => parseFloat(v)}
+											label="Average %"
+											type="text"
+											placeholder="Percentage"
 										/>
-										<form.Field
-											name="optimistic"
-											validators={{
-												onChange: ({ value }) =>
-													Number.isNaN(value) ? "Not a number!" : undefined,
-											}}
-											children={(field) => (
-												<FormTextField
-													field={field()}
-													transform={(v) => parseFloat(v)}
-													label="Most %"
-													type="text"
-													placeholder="Percentage"
-												/>
-											)}
+									)}
+								/>
+								<form.Field
+									name="optimistic"
+									validators={{
+										onChange: ({ value }) =>
+											Number.isNaN(value) ? "Not a number!" : undefined,
+									}}
+									children={(field) => (
+										<FormTextField
+											field={field()}
+											transform={(v) => parseFloat(v)}
+											label="Most %"
+											type="text"
+											placeholder="Percentage"
 										/>
-									</TabsContent>
-								</Tabs>
-							</div>
-						)}
-					/>
+									)}
+								/>
+							</TabsContent>
+						</Tabs>
+					</div>
+				)}
+			/>
+		</>
+	);
+
+	return (
+		<Show
+			when={ctx.shown() !== "none"}
+			fallback={<p class="m-auto">No task selected.</p>}
+		>
+			<h1 class="text-lg">
+				<Switch>
+					<Match when={ctx.shown() === "selected"}>Editing task</Match>
+					<Match when={ctx.shown() === "new_child"}>Creating task</Match>
+				</Switch>
+			</h1>
+			<Separator />
+			<div class="flex gap-1">
+				<div class="flex flex-col flex-wrap gap-2 w-min">
+					{formFields}
 				</div>
-			</Match>
-		</Switch>
+				<div class="flex-1"></div>
+			</div>
+		</Show>
 	);
 }
 
 export function TaskProperties() {
 	return (
-		<div class="flex w-full h-full p-2">
+		<div class="flex flex-col gap-2 w-full h-full p-2">
 			<Fields />
 		</div>
 	);
