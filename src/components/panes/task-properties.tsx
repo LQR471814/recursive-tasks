@@ -42,6 +42,7 @@ function FormMultilineText(props: {
 	>;
 	label: string;
 	placeholder?: string;
+	class?: string;
 }) {
 	return (
 		<TextField>
@@ -52,6 +53,7 @@ function FormMultilineText(props: {
 				placeholder={props.placeholder}
 				onBlur={props.field.handleBlur}
 				onInput={(e) => props.field.handleChange(e.currentTarget.value)}
+				class={props.class}
 			/>
 			<FieldInfo field={props.field} />
 		</TextField>
@@ -94,11 +96,13 @@ function FormTextField<
 	type: TextFieldInputProps<"input">["type"];
 	label: string;
 	placeholder?: string;
+	class?: string;
 }) {
 	return (
 		<TextField>
 			<TextFieldLabel for={props.field.name}>{props.label}</TextFieldLabel>
 			<TextFieldInput
+				class={props.class}
 				id={props.field.name}
 				type={props.type}
 				name={props.field.name}
@@ -134,6 +138,7 @@ function Fields() {
 				}}
 				children={(field) => (
 					<FormTextField
+						class="max-w-[180px]"
 						field={field()}
 						transform={(v) => v}
 						label="Name"
@@ -293,11 +298,15 @@ function Fields() {
 				</Switch>
 			</h1>
 			<Separator />
-			<div class="flex gap-1">
-				<div class="flex flex-col flex-wrap gap-2 w-min">
-					{formFields}
-				</div>
-				<div class="flex-1"></div>
+			<div class="flex flex-col flex-wrap gap-2 w-min min-h-[180px] max-h-[800px]">
+				{formFields}
+				<p>item 2</p>
+				<p>item 2</p>
+				<p>item 2</p>
+				<p>item 2</p>
+				<p>item 2</p>
+				<p>item 2</p>
+				<p>item 2</p>
 			</div>
 		</Show>
 	);
