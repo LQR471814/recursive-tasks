@@ -246,7 +246,7 @@ function FormFields(props: {
 										<FormTextField
 											field={field()}
 											transform={(v) => parseFloat(v)}
-											label="Least %"
+											label="Optimistic %"
 											type="text"
 											placeholder="Percentage"
 										/>
@@ -262,7 +262,7 @@ function FormFields(props: {
 										<FormTextField
 											field={field()}
 											transform={(v) => parseFloat(v)}
-											label="Average %"
+											label="Expected %"
 											type="text"
 											placeholder="Percentage"
 										/>
@@ -278,7 +278,7 @@ function FormFields(props: {
 										<FormTextField
 											field={field()}
 											transform={(v) => parseFloat(v)}
-											label="Most %"
+											label="Pessimistic %"
 											type="text"
 											placeholder="Percentage"
 										/>
