@@ -46,7 +46,7 @@ export function TimeDisplay(props: {
 					)}
 				>
 					<Separator class="h-5" orientation="vertical" />
-					<span class="m-0">{props.time.day}</span>
+					<span class="m-0">{props.time.day.toString().padStart(2, "0")}</span>
 				</Show>
 				<Show
 					when={test()(
@@ -59,7 +59,8 @@ export function TimeDisplay(props: {
 				>
 					<Separator class="h-5" orientation="vertical" />
 					<span class="m-0">
-						{props.time.hour}:{props.time.minute}
+						{props.time.hour.toString().padStart(2, "0")}:
+						{props.time.minute.toString().padStart(2, "0")}
 					</span>
 				</Show>
 			</div>

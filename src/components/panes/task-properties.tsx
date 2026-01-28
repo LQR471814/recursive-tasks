@@ -1,8 +1,8 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: lots of typescript shenanigans happening here
 
 import type { AnyFieldApi, FieldApi } from "@tanstack/solid-form";
-import { Match, Switch, useContext } from "solid-js";
-import { timescaleFromType } from "src/lib/timescales";
+import { createEffect, Match, Switch, useContext } from "solid-js";
+import { type Timescale, timescaleFromType } from "src/lib/timescales";
 import {
 	CurrentTaskContext,
 	type CurrentTaskValue,
@@ -18,6 +18,7 @@ import {
 	TextFieldLabel,
 	TextFieldTextArea,
 } from "../ui/text-field";
+import { Badge } from "../ui/badge";
 
 function FormMultilineText(props: {
 	field: FieldApi<
@@ -288,28 +289,16 @@ function FormFields(props: {
 function Header(props: {
 	title: string;
 	start: Temporal.ZonedDateTime;
-	end: Temporal.ZonedDateTime;
 	duration: Temporal.Duration;
+	timescale: Timescale;
 }) {
+	createEffect(() => { });
 	return (
 		<>
 			<h1 class="text-lg">{props.title}</h1>
 			<div class="flex items-center">
-				<TimeDisplay
-					class="pl-0"
-					time={props.start}
-					minDuration={props.duration}
-				/>
-				<svg
-					class="h-3"
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="currentColor"
-				>
-					<title>Forward Arrow</title>
-					<path d="M1.99974 13.0001L1.9996 11.0002L18.1715 11.0002L14.2218 7.05044L15.636 5.63623L22 12.0002L15.636 18.3642L14.2218 16.9499L18.1716 13.0002L1.99974 13.0001Z"></path>
-				</svg>
-				<TimeDisplay time={props.end} minDuration={props.duration} />
+				<Badge variant="secondary">{props.timescale.name}</Badge>
+				<TimeDisplay time={props.start} minDuration={props.duration} />
 			</div>
 			<Separator />
 		</>
@@ -329,17 +318,19 @@ function Form(props: { title: string; key: keyof CurrentTaskValue["forms"] }) {
 	return (
 		<>
 			<form.Subscribe
-				selector={(state) => ({
-					start: state.values.timeframe_start,
-					end: timescaleFromType(state.values.timescale).instance(
-						state.values.timeframe_start,
-					).end,
-				})}
+				selector={(state) => {
+					const timescale = timescaleFromType(state.values.timescale);
+					return {
+						start: state.values.timeframe_start,
+						end: timescale.instance(state.values.timeframe_start).end,
+						timescale,
+					};
+				}}
 				children={(selected) => (
 					<Header
 						title={props.title}
 						start={selected().start}
-						end={selected().end}
+						timescale={selected().timescale}
 						duration={selected().end.since(selected().start)}
 					/>
 				)}
