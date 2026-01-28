@@ -11,7 +11,7 @@ createRoot(() => {
 	createEffect(() => {
 		const interval = setInterval(() => {
 			setNow(Temporal.Now.zonedDateTimeISO());
-		}, 10000);
+		}, 60 * 1000 * 1000);
 		return () => {
 			clearInterval(interval);
 		};
