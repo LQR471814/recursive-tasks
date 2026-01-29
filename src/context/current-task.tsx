@@ -4,6 +4,7 @@ import {
 	liveQueryCollectionOptions,
 } from "@tanstack/solid-db";
 import { createForm } from "@tanstack/solid-form";
+import { DragDropProvider, DragDropSensors } from "@thisbeyond/solid-dnd";
 import {
 	batch,
 	createContext,
@@ -12,8 +13,13 @@ import {
 } from "solid-js";
 import { showToast } from "src/components/ui/toast";
 import { tasksCollection } from "src/lib/db";
+import type { Enums } from "src/lib/supabase/types.gen";
 import { ROOT_ID } from "~/lib/constants";
-import { type TimescaleInstance, timescaleTypeOf } from "~/lib/timescales";
+import {
+	type Timescale,
+	type TimescaleInstance,
+	timescaleTypeOf,
+} from "~/lib/timescales";
 
 // TODO: improve this hack!
 const __collection = createCollection(
@@ -119,6 +125,17 @@ function currentTaskValue() {
 				duration: 3000,
 			});
 		},
+		async move(
+			id: string,
+			newTime: Temporal.ZonedDateTime,
+			newTimescale: Enums<"timescale_type">,
+		) {
+			const result = tasksCollection.update(id, (val) => {
+				val.timeframe_start = newTime.toInstant().toString();
+				val.timescale = newTimescale;
+			});
+			await result.isPersisted.promise;
+		},
 	};
 }
 
@@ -129,8 +146,32 @@ export const CurrentTaskContext = createContext<CurrentTaskValue>();
 export const CurrentTaskProvider: ParentComponent = (props) => {
 	const value = currentTaskValue();
 	return (
-		<CurrentTaskContext.Provider value={value}>
-			{props.children}
-		</CurrentTaskContext.Provider>
+		<DragDropProvider
+			onDragEnd={(e) => {
+				if (!e.droppable) {
+					return;
+				}
+				const dragData = e.draggable.data as {
+					taskId: string;
+				};
+				const dropData = e.droppable.data as {
+					time: Temporal.ZonedDateTime;
+					timescale: Timescale;
+				};
+				value.move(
+					dragData.taskId,
+					dropData.time,
+					timescaleTypeOf(dropData.timescale),
+				);
+				if (value.selectedTaskId() === dragData.taskId) {
+					value.selectTask(dragData.taskId);
+				}
+			}}
+		>
+			<DragDropSensors />
+			<CurrentTaskContext.Provider value={value}>
+				{props.children}
+			</CurrentTaskContext.Provider>
+		</DragDropProvider>
 	);
 };
