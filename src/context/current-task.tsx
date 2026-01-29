@@ -109,7 +109,16 @@ function currentTaskValue() {
 				duration: 3000,
 			});
 		},
-		saveTask() {},
+		saveTask() {
+			tasksCollection.update(edit.state.values.id, (val) => {
+				Object.assign(val, edit.state.values);
+			});
+			showToast({
+				title: `Task updated: ${edit.state.values.name}`,
+				variant: "success",
+				duration: 3000,
+			});
+		},
 	};
 }
 
