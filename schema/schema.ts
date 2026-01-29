@@ -10,6 +10,7 @@ import {
 
 export const timescale_type = pgEnum("timescale_type", [
 	"all_time",
+	"ten_year",
 	"five_year",
 	"year",
 	"quarter",

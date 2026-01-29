@@ -13,6 +13,7 @@ export const publicImplementationTypeSchema = z.union([
 
 export const publicTimescaleTypeSchema = z.union([
   z.literal("all_time"),
+  z.literal("ten_year"),
   z.literal("five_year"),
   z.literal("year"),
   z.literal("quarter"),

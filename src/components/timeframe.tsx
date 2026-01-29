@@ -2,8 +2,8 @@ import { useLiveQuery } from "@tanstack/solid-db";
 import { createMemo, For, useContext } from "solid-js";
 import { CurrentTaskContext } from "~/context/current-task";
 import { tasksCollection } from "~/lib/db";
-import { type Timescale, timescaleFromType } from "~/lib/timescales";
-import { asInstant, cn, currentTz } from "~/lib/utils";
+import { type Timescale, timescaleTypeOf } from "~/lib/timescales";
+import { asInstant, cn } from "~/lib/utils";
 import { Chip } from "./task";
 import { Button } from "./ui/button";
 
@@ -15,7 +15,6 @@ export function Timeframe(props: {
 	accented?: boolean;
 }) {
 	const instance = createMemo(() => props.timescale.instance(props.time));
-	const duration = createMemo(() => instance().end.since(instance().start));
 	const query = useLiveQuery((q) =>
 		q
 			.from({ task: tasksCollection })
@@ -24,14 +23,10 @@ export function Timeframe(props: {
 				if (task.timescale === "all_time") {
 					return false;
 				}
-				const startInstant = asInstant(task.timeframe_start);
-				const startZoned = startInstant.toZonedDateTimeISO(currentTz());
-				const taskDuration = timescaleFromType(task.timescale)
-					.instance(startZoned)
-					.end.since(startZoned);
-				if (Temporal.Duration.compare(taskDuration, duration()) < 0) {
+				if (task.timescale !== timescaleTypeOf(props.timescale)) {
 					return false;
 				}
+				const startInstant = asInstant(task.timeframe_start);
 				return (
 					Temporal.Instant.compare(
 						startInstant,

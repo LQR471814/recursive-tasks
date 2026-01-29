@@ -275,7 +275,7 @@ export function durationOf(timescale: Timescale) {
 export function timescaleTypeOf(timescale: Timescale): Enums<"timescale_type"> {
 	switch (timescale) {
 		case decade:
-			break;
+			return "ten_year"
 		case fiveyear:
 			return "five_year";
 		case year:

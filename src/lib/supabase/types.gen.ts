@@ -146,6 +146,7 @@ export type Database = {
       implementation_type: "children" | "hours"
       timescale_type:
         | "all_time"
+        | "ten_year"
         | "five_year"
         | "year"
         | "quarter"
@@ -286,6 +287,7 @@ export const Constants = {
       implementation_type: ["children", "hours"],
       timescale_type: [
         "all_time",
+        "ten_year",
         "five_year",
         "year",
         "quarter",
