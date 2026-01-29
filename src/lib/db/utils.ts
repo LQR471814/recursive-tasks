@@ -16,11 +16,11 @@ export function tableQueryCollection<
 	Schema extends StandardSchema<unknown>,
 	__Row extends ReturnType<
 		T["select"]["queryFn"] extends (variables: any) => any
-			? T["select"]["queryFn"]
-			: () => never
+		? T["select"]["queryFn"]
+		: () => never
 	> extends Promise<(infer U)[]>
-		? U
-		: never,
+	? U
+	: never,
 >(table: T, getKey: GetKey, schema: Schema) {
 	return createCollection(
 		queryCollectionOptions<
@@ -39,12 +39,10 @@ export function tableQueryCollection<
 				);
 			},
 			onUpdate: async ({ transaction }: any) => {
-				await table.update.mutationFn(
-					transaction.mutations.map((m: any) => ({
-						...m.changes,
-						id: m.key,
-					})),
-				);
+				await table.update.mutationFn({
+					ids: transaction.mutations.map((m: any) => m.key),
+					updates: transaction.mutations.map((m: any) => m.changes),
+				});
 			},
 			onDelete: async ({ transaction }: any) => {
 				await table.delete.mutationFn(

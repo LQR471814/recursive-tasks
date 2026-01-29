@@ -2,6 +2,7 @@ import { createMemo, useContext } from "solid-js";
 import { useCurrentTime, ViewContext } from "~/context/view";
 import * as timescales from "~/lib/timescales";
 import { Horizontal } from "../horizontal";
+import { TaskChipContext } from "~/context/task-chip";
 
 export function HorizontalControlled() {
 	const ctx = useContext(ViewContext);
@@ -29,12 +30,14 @@ export function HorizontalControlled() {
 	// 	return cursor;
 	// });
 	return (
-		<Horizontal
-			class="p-1"
-			parent={ctx.state.timescale}
-			child={child()}
-			now={currentTime()}
-		/>
+		<TaskChipContext.Provider value={{ namespace: "horizontal" }}>
+			<Horizontal
+				class="p-1"
+				parent={ctx.state.timescale}
+				child={child()}
+				now={currentTime()}
+			/>
+		</TaskChipContext.Provider>
 	);
 	// return (
 	// 	<div class="relative h-full p-1">

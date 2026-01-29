@@ -11,19 +11,22 @@ import {
 } from "~/lib/timescales";
 import { cn } from "~/lib/utils";
 import { useCurrentTime } from "src/context/view";
+import { TaskChipContext } from "~/context/task-chip";
 
 export function VerticalTimeframes(props: { class?: string }) {
 	const currentTime = useCurrentTime();
 	return (
-		<div class={cn("flex flex-col gap-1 p-1 overflow-y-auto", props.class)}>
-			<Timeframe timescale={decade} time={currentTime()} />
-			<Timeframe timescale={fiveyear} time={currentTime()} />
-			<Timeframe timescale={year} time={currentTime()} />
-			<Timeframe timescale={quarter} time={currentTime()} />
-			<Timeframe timescale={month} time={currentTime()} />
-			<Timeframe timescale={week} time={currentTime()} />
-			<Timeframe timescale={day} time={currentTime()} />
-			<Timeframe timescale={daypart} time={currentTime()} />
-		</div>
+		<TaskChipContext.Provider value={{ namespace: "vertical" }}>
+			<div class={cn("flex flex-col gap-1 p-1 overflow-y-auto", props.class)}>
+				<Timeframe timescale={decade} time={currentTime()} />
+				<Timeframe timescale={fiveyear} time={currentTime()} />
+				<Timeframe timescale={year} time={currentTime()} />
+				<Timeframe timescale={quarter} time={currentTime()} />
+				<Timeframe timescale={month} time={currentTime()} />
+				<Timeframe timescale={week} time={currentTime()} />
+				<Timeframe timescale={day} time={currentTime()} />
+				<Timeframe timescale={daypart} time={currentTime()} />
+			</div>
+		</TaskChipContext.Provider>
 	);
 }

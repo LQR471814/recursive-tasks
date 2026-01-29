@@ -14,7 +14,7 @@ export function Horizontal(props: {
 		...childInstancesOf(props.parent, props.child, props.now),
 	]);
 	return (
-		<div class={cn("flex gap-1 h-full w-full", props.class)}>
+		<div class={cn("flex gap-1 h-full w-full overflow-y-auto", props.class)}>
 			<For each={instances()}>
 				{(start) => (
 					<Timeframe

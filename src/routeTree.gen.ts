@@ -14,6 +14,7 @@ import { Route as TestVerticalRouteImport } from './routes/test/vertical'
 import { Route as TestTaskDataTableRouteImport } from './routes/test/task-data-table'
 import { Route as TestResizableRouteImport } from './routes/test/resizable'
 import { Route as TestHorizontalRouteImport } from './routes/test/horizontal'
+import { Route as TestDndRouteImport } from './routes/test/dnd'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,9 +41,15 @@ const TestHorizontalRoute = TestHorizontalRouteImport.update({
   path: '/test/horizontal',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TestDndRoute = TestDndRouteImport.update({
+  id: '/test/dnd',
+  path: '/test/dnd',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/test/dnd': typeof TestDndRoute
   '/test/horizontal': typeof TestHorizontalRoute
   '/test/resizable': typeof TestResizableRoute
   '/test/task-data-table': typeof TestTaskDataTableRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/test/dnd': typeof TestDndRoute
   '/test/horizontal': typeof TestHorizontalRoute
   '/test/resizable': typeof TestResizableRoute
   '/test/task-data-table': typeof TestTaskDataTableRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/test/dnd': typeof TestDndRoute
   '/test/horizontal': typeof TestHorizontalRoute
   '/test/resizable': typeof TestResizableRoute
   '/test/task-data-table': typeof TestTaskDataTableRoute
@@ -67,6 +76,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/test/dnd'
     | '/test/horizontal'
     | '/test/resizable'
     | '/test/task-data-table'
@@ -74,6 +84,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/test/dnd'
     | '/test/horizontal'
     | '/test/resizable'
     | '/test/task-data-table'
@@ -81,6 +92,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/test/dnd'
     | '/test/horizontal'
     | '/test/resizable'
     | '/test/task-data-table'
@@ -89,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TestDndRoute: typeof TestDndRoute
   TestHorizontalRoute: typeof TestHorizontalRoute
   TestResizableRoute: typeof TestResizableRoute
   TestTaskDataTableRoute: typeof TestTaskDataTableRoute
@@ -132,11 +145,19 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof TestHorizontalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/test/dnd': {
+      id: '/test/dnd'
+      path: '/test/dnd'
+      fullPath: '/test/dnd'
+      preLoaderRoute: typeof TestDndRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TestDndRoute: TestDndRoute,
   TestHorizontalRoute: TestHorizontalRoute,
   TestResizableRoute: TestResizableRoute,
   TestTaskDataTableRoute: TestTaskDataTableRoute,

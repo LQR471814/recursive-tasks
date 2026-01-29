@@ -4,8 +4,9 @@ import { CurrentTaskContext } from "~/context/current-task";
 import { tasksCollection } from "~/lib/db";
 import { type Timescale, timescaleTypeOf } from "~/lib/timescales";
 import { asInstant, cn } from "~/lib/utils";
-import { Chip } from "./task";
 import { Button } from "./ui/button";
+import { TaskChip } from "./task";
+import { createDroppable } from "@thisbeyond/solid-dnd";
 
 export function Timeframe(props: {
 	class?: string;
@@ -14,31 +15,30 @@ export function Timeframe(props: {
 	collapsible?: boolean;
 	accented?: boolean;
 }) {
+	const droppable = createDroppable(
+		`${props.timescale.name} ${props.time.toString()}`,
+		{
+			time: props.time,
+			timescale: props.timescale,
+		},
+	);
 	const instance = createMemo(() => props.timescale.instance(props.time));
-	const query = useLiveQuery((q) =>
-		q
-			.from({ task: tasksCollection })
-			.fn.where(({ task }) => {
-				// exclude root task
-				if (task.timescale === "all_time") {
-					return false;
-				}
-				if (task.timescale !== timescaleTypeOf(props.timescale)) {
-					return false;
-				}
-				const startInstant = asInstant(task.timeframe_start);
-				return (
-					Temporal.Instant.compare(
-						startInstant,
-						instance().start.toInstant(),
-					) >= 0 &&
-					Temporal.Instant.compare(startInstant, instance().end.toInstant()) < 0
-				);
-			})
-			.select(({ task }) => ({
-				id: task.id,
-				name: task.name,
-			})),
+	const task = useLiveQuery((q) =>
+		q.from({ task: tasksCollection }).fn.where(({ task }) => {
+			// exclude root task
+			if (task.timescale === "all_time") {
+				return false;
+			}
+			if (task.timescale !== timescaleTypeOf(props.timescale)) {
+				return false;
+			}
+			const startInstant = asInstant(task.timeframe_start);
+			return (
+				Temporal.Instant.compare(startInstant, instance().start.toInstant()) >=
+				0 &&
+				Temporal.Instant.compare(startInstant, instance().end.toInstant()) < 0
+			);
+		}),
 	);
 	const currentTaskCtx = useContext(CurrentTaskContext);
 
@@ -46,22 +46,24 @@ export function Timeframe(props: {
 		<button
 			type="button"
 			class={cn(
-				"flex flex-col min-h-[100px] overflow-y-auto group relative",
+				"flex flex-col min-h-[100px] group relative h-fit",
 				"border border-muted rounded-lg",
 				"transition-colors hover:border-primary/30 cursor-default",
 				props.class,
 			)}
+			classList={{ "bg-muted": droppable.isActiveDroppable }}
 			onDblClick={() => {
 				if (!currentTaskCtx) {
 					return;
 				}
 				currentTaskCtx.newChildAt(instance());
 			}}
+			use:droppable
 		>
 			<div
 				classList={{
 					"flex justify-between items-center sticky top-0": true,
-					"bg-background border-b border-muted px-2 py-1": true,
+					"rounded-t-lg bg-background border-b border-muted px-2 py-1": true,
 					"transition-colors group-hover:border-primary/30": true,
 				}}
 			>
@@ -87,11 +89,13 @@ export function Timeframe(props: {
 				</Button>
 			</div>
 			<div class="flex flex-col gap-2 px-2 py-1 pb-8">
-				<For each={query()}>
+				<For each={task()}>
 					{(task) => (
-						<Chip
-							blocked={false}
-							{...task}
+						<TaskChip
+							class="z-10"
+							id={task.id}
+							name={task.name}
+							color="bg-gray-500"
 							onClick={() => {
 								currentTaskCtx?.selectTask(task.id);
 							}}

@@ -8,6 +8,21 @@ import { routeTree } from "./routeTree.gen";
 import "solid-devtools";
 import { attachDevtoolsOverlay } from "@solid-devtools/overlay";
 import { queryClient } from "./lib/query";
+import type { Draggable, Droppable } from "@thisbeyond/solid-dnd";
+import { createDraggable, createDroppable } from "@thisbeyond/solid-dnd";
+
+// prevent tree shaking of directives
+false && createDroppable;
+false && createDraggable;
+
+declare module "solid-js" {
+	namespace JSX {
+		interface DirectiveFunctions {
+			draggable: Draggable;
+			droppable: Droppable;
+		}
+	}
+}
 
 attachDevtoolsOverlay();
 

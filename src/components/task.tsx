@@ -1,37 +1,68 @@
-import { createMemo } from "solid-js";
+import { cn } from "src/lib/utils";
+import { useContext } from "solid-js";
+import { createDraggable } from "@thisbeyond/solid-dnd";
+import { TaskChipContext } from "src/context/task-chip";
 
-export function Chip(props: {
+function Display(props: {
+	class?: string;
 	name: string;
-	blocked: boolean;
+	color: string;
 	onClick: () => void;
+	ref?: HTMLButtonElement | ((el: HTMLButtonElement) => void);
 }) {
-	const color = createMemo(() => {
-		const status = "pending" as string;
-		switch (status) {
-			case "pending":
-				return "bg-gray-500";
-			case "completed":
-				return "bg-green-500";
-			case "dropped":
-				return "bg-red-500";
-		}
-		return "";
-	});
 	return (
 		<button
 			type="button"
-			class="flex items-center gap-2 rounded-md border shadow-sm px-2 cursor-default hover:bg-primary/5 transition-colors"
+			class={cn(
+				"flex items-center gap-2 rounded-md border shadow-sm px-2 cursor-default hover:bg-primary/5 transition-colors touch-none bg-background",
+				props.class,
+			)}
 			onClick={props.onClick}
+			ref={props.ref}
 		>
 			<div
 				classList={{
 					"aspect-square": true,
 					"p-1": true,
 					"rounded-full": true,
-					[color()]: true,
+					[props.color]: true,
 				}}
 			/>
 			{props.name}
 		</button>
 	);
+}
+
+export function TaskChip(props: {
+	id: string;
+	name: string;
+	color: string;
+	onClick: () => void;
+	class?: string;
+}) {
+	const ctx = useContext(TaskChipContext);
+	const id = ctx?.namespace ? `${ctx.namespace}:${props.id}` : props.id;
+	try {
+		const draggable = createDraggable(id, { taskId: props.id });
+		return (
+			<Display
+				class={cn("draggable", props.class)}
+				name={props.name}
+				color={props.color}
+				onClick={props.onClick}
+				ref={(el) => {
+					draggable(el);
+				}}
+			/>
+		);
+	} catch {
+		return (
+			<Display
+				class={cn("draggable", props.class)}
+				name={props.name}
+				color={props.color}
+				onClick={props.onClick}
+			/>
+		);
+	}
 }
