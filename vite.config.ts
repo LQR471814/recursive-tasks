@@ -4,7 +4,7 @@ import devtools from "solid-devtools/vite";
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
 	plugins: [
 		tanstackRouter({
 			target: "solid",
@@ -16,6 +16,12 @@ export default defineConfig({
 	],
 	build: {
 		target: "esnext",
+		rollupOptions: {
+			external:
+				mode === "production"
+					? [/src\/routes\/test\/.*/] // Ignore everything in the test folder
+					: [],
+		},
 	},
 	resolve: {
 		alias: {
@@ -23,4 +29,4 @@ export default defineConfig({
 			"~": join(__dirname, "./src"),
 		},
 	},
-});
+}));
