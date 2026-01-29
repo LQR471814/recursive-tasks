@@ -1,7 +1,7 @@
-import { cn } from "src/lib/utils";
-import { useContext } from "solid-js";
 import { createDraggable } from "@thisbeyond/solid-dnd";
+import { useContext } from "solid-js";
 import { TaskChipContext } from "src/context/task-chip";
+import { cn } from "src/lib/utils";
 
 function Display(props: {
 	class?: string;

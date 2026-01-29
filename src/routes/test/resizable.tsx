@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/solid-router";
 import { DragDropProvider, DragDropSensors } from "@thisbeyond/solid-dnd";
 import { HorizontalControlled } from "src/components/panes/horizontal-controlled";
 import { tasksCollection } from "src/lib/db";
-import { Timescale, timescaleTypeOf } from "src/lib/timescales";
+import { type Timescale, timescaleTypeOf } from "src/lib/timescales";
 import { TaskProperties } from "~/components/panes/task-properties";
 import { VerticalTimeframes } from "~/components/panes/vertical";
 import { ViewController } from "~/components/panes/view-controller";

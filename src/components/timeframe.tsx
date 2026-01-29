@@ -1,12 +1,12 @@
 import { useLiveQuery } from "@tanstack/solid-db";
+import { createDroppable } from "@thisbeyond/solid-dnd";
 import { createMemo, For, useContext } from "solid-js";
 import { CurrentTaskContext } from "~/context/current-task";
 import { tasksCollection } from "~/lib/db";
 import { type Timescale, timescaleTypeOf } from "~/lib/timescales";
 import { asInstant, cn } from "~/lib/utils";
-import { Button } from "./ui/button";
 import { TaskChip } from "./task";
-import { createDroppable } from "@thisbeyond/solid-dnd";
+import { Button } from "./ui/button";
 
 export function Timeframe(props: {
 	class?: string;
@@ -35,7 +35,7 @@ export function Timeframe(props: {
 			const startInstant = asInstant(task.timeframe_start);
 			return (
 				Temporal.Instant.compare(startInstant, instance().start.toInstant()) >=
-				0 &&
+					0 &&
 				Temporal.Instant.compare(startInstant, instance().end.toInstant()) < 0
 			);
 		}),
