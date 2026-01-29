@@ -21,7 +21,7 @@ function NavLink(props: {
 
 export const Route = createRootRoute({
 	component: () => (
-		<div class="grid grid-rows-[min-content,1fr] h-full">
+		<div class="grid grid-rows-[min-content,minmax(0,1fr)] h-full">
 			<nav class="bg-gray-800 p-4">
 				<div class="flex gap-4 justify-center">
 					<NavLink to="/">Home</NavLink>
@@ -31,7 +31,7 @@ export const Route = createRootRoute({
 					<NavLink to="/test/resizable">Resizable</NavLink>
 				</div>
 			</nav>
-			<main class="h-full overflow-y-auto">
+			<main class="h-full">
 				<Outlet />
 			</main>
 			<Toaster />

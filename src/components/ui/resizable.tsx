@@ -16,7 +16,7 @@ const Resizable = <T extends ValidComponent = "div">(
 	return (
 		<ResizablePrimitive
 			class={cn(
-				"flex size-full data-[orientation=vertical]:flex-col",
+				"flex data-[orientation=vertical]:flex-col",
 				props.class,
 			)}
 			{...rest}

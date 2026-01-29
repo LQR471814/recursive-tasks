@@ -40,7 +40,7 @@ function currentTaskValue() {
 				optimistic: 0.5,
 				expected: 1,
 				pessimistic: 1.5,
-				timeframe_start: Temporal.Now.instant(),
+				timeframe_start: Temporal.Now.instant().toString(),
 				timescale: "week",
 				parent_id: ROOT_ID,
 				assigned_to: null,
@@ -81,7 +81,7 @@ function currentTaskValue() {
 					isTouched: true,
 					isDirty: true,
 				}));
-				creation.setFieldValue("timeframe_start", timeframe.start.toInstant());
+				creation.setFieldValue("timeframe_start", timeframe.start.toInstant().toString());
 				creation.setFieldMeta("timeframe_start", (prev) => ({
 					...prev,
 					isTouched: true,

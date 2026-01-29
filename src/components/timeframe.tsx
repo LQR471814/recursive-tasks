@@ -1,16 +1,9 @@
-import {
-	and,
-	createCollection,
-	gte,
-	liveQueryCollectionOptions,
-	lte,
-	useLiveQuery,
-} from "@tanstack/solid-db";
-import { For, useContext } from "solid-js";
+import { useLiveQuery } from "@tanstack/solid-db";
+import { createEffect, For, useContext } from "solid-js";
 import { CurrentTaskContext } from "~/context/current-task";
 import { tasksCollection } from "~/lib/db";
 import type { Timescale } from "~/lib/timescales";
-import { cn } from "~/lib/utils";
+import { asInstant, cn } from "~/lib/utils";
 import { Chip } from "./task";
 import { Button } from "./ui/button";
 
@@ -22,25 +15,35 @@ export function Timeframe(props: {
 	accented?: boolean;
 }) {
 	const instance = props.timescale.instance(props.time);
-	const timeframeTasks = createCollection(
-		liveQueryCollectionOptions({
-			query: (q) =>
-				q
-					.from({ task: tasksCollection })
-					.select(({ task }) => ({
-						id: task.id,
-						name: task.name,
-					}))
-					.where(({ task }) =>
-						and(
-							gte(task.timeframe_start, instance.start.toInstant()),
-							lte(task.timeframe_start, instance.end.toInstant()),
-						),
-					),
-		}),
+	const query = useLiveQuery((q) =>
+		q
+			.from({ task: tasksCollection })
+			.fn.where(({ task }) => {
+				console.log(task.timeframe_start);
+				return (
+					Temporal.Instant.compare(
+						asInstant(task.timeframe_start),
+						instance.start.toInstant(),
+					) >= 0 &&
+					Temporal.Instant.compare(
+						asInstant(task.timeframe_start),
+						instance.end.toInstant(),
+					) < 0
+				);
+			})
+			.select(({ task }) => ({
+				id: task.id,
+				name: task.name,
+			})),
 	);
-	const query = useLiveQuery((q) => q.from({ timeframeTasks }));
 	const currentTaskCtx = useContext(CurrentTaskContext);
+	createEffect(() => {
+		// console.log(
+		// 	query(),
+		// 	instance.start.toInstant().toString(),
+		// 	instance.end.toInstant().toString(),
+		// );
+	});
 
 	return (
 		<button

@@ -7,8 +7,14 @@ import { createRouter, RouterProvider } from "@tanstack/solid-router";
 import { routeTree } from "./routeTree.gen";
 import "solid-devtools";
 import { attachDevtoolsOverlay } from "@solid-devtools/overlay";
+import { queryClient } from "./lib/query";
 
 attachDevtoolsOverlay();
+
+if (import.meta.env.DEV) {
+	// @ts-expect-error: add query client for devtools
+	window.__TANSTACK_QUERY_CLIENT__ = queryClient;
+}
 
 const router = createRouter({ routeTree });
 

@@ -24,7 +24,7 @@ import {
 	TextFieldLabel,
 	TextFieldTextArea,
 } from "../ui/text-field";
-import { currentTz } from "src/lib/utils";
+import { currentTz, asInstant } from "src/lib/utils";
 
 function FormMultilineText(props: {
 	field: FieldApi<
@@ -371,8 +371,12 @@ function Form(props: {
 				selector={(state) => {
 					const timescale = timescaleFromType(state.values.timescale);
 					return {
-						start: state.values.timeframe_start,
-						end: timescale.instance(state.values.timeframe_start.toZonedDateTimeISO(currentTz())).end,
+						start: asInstant(state.values.timeframe_start),
+						end: timescale.instance(
+							asInstant(state.values.timeframe_start).toZonedDateTimeISO(
+								currentTz(),
+							),
+						).end,
 						timescale,
 					};
 				}}
@@ -381,7 +385,9 @@ function Form(props: {
 						title={props.title}
 						start={selected().start.toZonedDateTimeISO(currentTz())}
 						timescale={selected().timescale}
-						duration={selected().end.since(selected().start.toZonedDateTimeISO(currentTz()))}
+						duration={selected().end.since(
+							selected().start.toZonedDateTimeISO(currentTz()),
+						)}
 					/>
 				)}
 			/>

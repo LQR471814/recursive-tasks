@@ -99,7 +99,7 @@ export const publicTaskRowSchema = z.object({
   optimistic: z.number(),
   parent_id: z.string().default(() => crypto.randomUUID()),
   pessimistic: z.number(),
-  timeframe_start: z.string().transform((v) => Temporal.Instant.from(v)),
+  timeframe_start: z.string(),
   timescale: publicTimescaleTypeSchema,
 });
 
@@ -113,7 +113,7 @@ export const publicTaskInsertSchema = z.object({
   optimistic: z.number(),
   parent_id: z.string().default(() => crypto.randomUUID()),
   pessimistic: z.number(),
-  timeframe_start: z.string().transform((v) => Temporal.Instant.from(v)),
+  timeframe_start: z.string(),
   timescale: publicTimescaleTypeSchema,
 });
 
@@ -127,7 +127,7 @@ export const publicTaskUpdateSchema = z.object({
   optimistic: z.number().optional(),
   parent_id: z.string().default(() => crypto.randomUUID()).optional(),
   pessimistic: z.number().optional(),
-  timeframe_start: z.string().transform((v) => Temporal.Instant.from(v)).optional(),
+  timeframe_start: z.string().optional(),
   timescale: publicTimescaleTypeSchema.optional(),
 });
 

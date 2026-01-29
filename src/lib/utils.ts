@@ -25,3 +25,10 @@ export { now };
 export function currentTz() {
 	return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
+
+export function asInstant(dt: string) {
+	if (dt.endsWith("Z")) {
+		return Temporal.Instant.from(dt);
+	}
+	return Temporal.Instant.from(`${dt}Z`);
+}
