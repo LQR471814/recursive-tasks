@@ -1,5 +1,5 @@
 import { createDraggable } from "@thisbeyond/solid-dnd";
-import { useContext } from "solid-js";
+import { createMemo, useContext } from "solid-js";
 import { TaskChipContext } from "src/context/task-chip";
 import { cn } from "src/lib/utils";
 
@@ -41,18 +41,20 @@ export function TaskChip(props: {
 	class?: string;
 }) {
 	const ctx = useContext(TaskChipContext);
-	const id = ctx?.namespace ? `${ctx.namespace}:${props.id}` : props.id;
+	const id = createMemo(() =>
+		ctx?.namespace ? `${ctx.namespace}:${props.id}` : props.id,
+	);
 	try {
-		const draggable = createDraggable(id, { taskId: props.id });
+		const draggable = createMemo(() =>
+			createDraggable(id(), { taskId: props.id }),
+		);
 		return (
 			<Display
 				class={cn("draggable", props.class)}
 				name={props.name}
 				color={props.color}
 				onClick={props.onClick}
-				ref={(el) => {
-					draggable(el);
-				}}
+				ref={draggable()}
 			/>
 		);
 	} catch {

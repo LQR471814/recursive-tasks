@@ -18,8 +18,8 @@ export function Timeframe(props: {
 	const droppable = createDroppable(
 		`${props.timescale.name} ${props.time.toString()}`,
 		{
-			time: props.time,
-			timescale: props.timescale,
+			time: () => props.time,
+			timescale: () => props.timescale,
 		},
 	);
 	const instance = createMemo(() => props.timescale.instance(props.time));
@@ -35,7 +35,7 @@ export function Timeframe(props: {
 			const startInstant = asInstant(task.timeframe_start);
 			return (
 				Temporal.Instant.compare(startInstant, instance().start.toInstant()) >=
-					0 &&
+				0 &&
 				Temporal.Instant.compare(startInstant, instance().end.toInstant()) < 0
 			);
 		}),

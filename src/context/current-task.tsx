@@ -51,13 +51,6 @@ function currentTaskValue() {
 				parent_id: ROOT_ID,
 				assigned_to: null,
 			} as TaskFields,
-			onSubmit: ({ value }) => {
-				if (selectedTaskId() !== undefined) {
-					console.log("update", value);
-				} else {
-					console.log("create", value);
-				}
-			},
 		}));
 	}
 	const edit = form();
@@ -155,13 +148,13 @@ export const CurrentTaskProvider: ParentComponent = (props) => {
 					taskId: string;
 				};
 				const dropData = e.droppable.data as {
-					time: Temporal.ZonedDateTime;
-					timescale: Timescale;
+					time(): Temporal.ZonedDateTime;
+					timescale(): Timescale;
 				};
 				value.move(
 					dragData.taskId,
-					dropData.time,
-					timescaleTypeOf(dropData.timescale),
+					dropData.time(),
+					timescaleTypeOf(dropData.timescale()),
 				);
 				if (value.selectedTaskId() === dragData.taskId) {
 					value.selectTask(dragData.taskId);
