@@ -80,10 +80,10 @@ export function tableQueries<
 
 	const deleteMutation = {
 		mutationKey: ["supabase", table, "delete"],
-		mutationFn: async (deletions: number[]) => {
+		mutationFn: async (deletions: string[]) => {
 			await supabase.from("task").delete().in("id", deletions);
 		},
-	} satisfies MutationOptions<void, DefaultError, number[]>;
+	} satisfies MutationOptions<void, DefaultError, string[]>;
 
 	return {
 		select: selectQuery,

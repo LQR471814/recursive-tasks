@@ -30,13 +30,11 @@ export function Timeframe(props: {
 					.select(({ task }) => ({
 						id: task.id,
 						name: task.name,
-						status: task.status,
-						blocked: task.blocked_by !== null,
 					}))
 					.where(({ task }) =>
 						and(
-							gte(task.timeframe_start, instance.start),
-							lte(task.timeframe_start, instance.end),
+							gte(task.timeframe_start, instance.start.toInstant()),
+							lte(task.timeframe_start, instance.end.toInstant()),
 						),
 					),
 		}),
@@ -92,6 +90,7 @@ export function Timeframe(props: {
 				<For each={query()}>
 					{(task) => (
 						<Chip
+							blocked={false}
 							{...task}
 							onClick={() => {
 								console.log("clicked!");

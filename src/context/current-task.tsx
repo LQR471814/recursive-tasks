@@ -10,6 +10,7 @@ import {
 	createSignal,
 	type ParentComponent,
 } from "solid-js";
+import { showToast } from "src/components/ui/toast";
 import { tasksCollection } from "src/lib/db";
 import { ROOT_ID } from "~/lib/constants";
 import { type TimescaleInstance, timescaleTypeOf } from "~/lib/timescales";
@@ -39,7 +40,7 @@ function currentTaskValue() {
 				optimistic: 0.5,
 				expected: 1,
 				pessimistic: 1.5,
-				timeframe_start: Temporal.Now.zonedDateTimeISO(),
+				timeframe_start: Temporal.Now.instant(),
 				timescale: "week",
 				parent_id: ROOT_ID,
 				assigned_to: null,
@@ -80,7 +81,7 @@ function currentTaskValue() {
 					isTouched: true,
 					isDirty: true,
 				}));
-				creation.setFieldValue("timeframe_start", timeframe.start);
+				creation.setFieldValue("timeframe_start", timeframe.start.toInstant());
 				creation.setFieldMeta("timeframe_start", (prev) => ({
 					...prev,
 					isTouched: true,
@@ -92,6 +93,20 @@ function currentTaskValue() {
 		resetNewChild() {
 			creation.reset();
 		},
+		createTask() {
+			tasksCollection.insert([
+				{
+					...creation.state.values,
+					timeframe_start: creation.state.values.timeframe_start.toString(),
+				},
+			]);
+			showToast({
+				title: `Task created: ${creation.state.values.name}`,
+				variant: "success",
+				duration: 3000,
+			});
+		},
+		saveTask() { },
 	};
 }
 

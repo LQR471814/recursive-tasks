@@ -24,6 +24,7 @@ import {
 	TextFieldLabel,
 	TextFieldTextArea,
 } from "../ui/text-field";
+import { currentTz } from "src/lib/utils";
 
 function FormMultilineText(props: {
 	field: FieldApi<
@@ -371,16 +372,16 @@ function Form(props: {
 					const timescale = timescaleFromType(state.values.timescale);
 					return {
 						start: state.values.timeframe_start,
-						end: timescale.instance(state.values.timeframe_start).end,
+						end: timescale.instance(state.values.timeframe_start.toZonedDateTimeISO(currentTz())).end,
 						timescale,
 					};
 				}}
 				children={(selected) => (
 					<Header
 						title={props.title}
-						start={selected().start}
+						start={selected().start.toZonedDateTimeISO(currentTz())}
 						timescale={selected().timescale}
-						duration={selected().end.since(selected().start)}
+						duration={selected().end.since(selected().start.toZonedDateTimeISO(currentTz()))}
 					/>
 				)}
 			/>
@@ -422,16 +423,7 @@ export function TaskProperties() {
 						title="Creating task..."
 						actionTitle="Create"
 						key="creation"
-						onAction={() => {
-							const { id, ...values } = taskCtx.forms.creation.state.values;
-							tasksCollection.insert([
-								{
-									...values,
-									timeframe_start:
-										taskCtx.forms.creation.state.values.timeframe_start.toString(),
-								},
-							]);
-						}}
+						onAction={taskCtx.createTask}
 					/>
 				</Match>
 				<Match when={taskCtx.shown() === "selected"}>
@@ -439,7 +431,7 @@ export function TaskProperties() {
 						title="Editing task..."
 						actionTitle="Save"
 						key="edit"
-						onAction={() => { }}
+						onAction={taskCtx.saveTask}
 					/>
 				</Match>
 				<Match when={taskCtx.shown() === "none"}>

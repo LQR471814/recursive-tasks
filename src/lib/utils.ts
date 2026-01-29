@@ -9,12 +9,19 @@ export function cn(...inputs: ClassValue[]) {
 const [now, setNow] = createSignal(Temporal.Now.zonedDateTimeISO());
 createRoot(() => {
 	createEffect(() => {
-		const interval = setInterval(() => {
-			setNow(Temporal.Now.zonedDateTimeISO());
-		}, 60 * 1000 * 1000);
+		const interval = setInterval(
+			() => {
+				setNow(Temporal.Now.zonedDateTimeISO());
+			},
+			60 * 1000 * 1000,
+		);
 		return () => {
 			clearInterval(interval);
 		};
 	});
 });
 export { now };
+
+export function currentTz() {
+	return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}

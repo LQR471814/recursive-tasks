@@ -6,6 +6,7 @@ import {
 } from "@tanstack/solid-router";
 import { createEffect } from "solid-js";
 import type { routeTree } from "~/routeTree.gen";
+import { Toaster } from "~/components/ui/toast";
 
 function NavLink(props: {
 	to: RoutePaths<typeof routeTree>;
@@ -33,6 +34,7 @@ export const Route = createRootRoute({
 			<main class="h-full overflow-y-auto">
 				<Outlet />
 			</main>
+			<Toaster />
 			{/* TanStack Router Devtools not yet available for Solid */}
 		</div>
 	),

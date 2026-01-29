@@ -33,11 +33,11 @@ function RouteComponent() {
 							<ResizableHandle withHandle />
 							<ResizablePanel initialSize={0.85} class="overflow-auto">
 								<Resizable orientation="vertical">
-									<ResizablePanel initialSize={0.5} class="overflow-auto">
+									<ResizablePanel initialSize={0.4} class="overflow-auto">
 										<HorizontalControlled />
 									</ResizablePanel>
 									<ResizableHandle withHandle />
-									<ResizablePanel initialSize={0.5} class="overflow-auto">
+									<ResizablePanel initialSize={0.6} class="overflow-auto">
 										<TaskProperties />
 									</ResizablePanel>
 								</Resizable>
