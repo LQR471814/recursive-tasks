@@ -1,9 +1,9 @@
 import { useLiveQuery } from "@tanstack/solid-db";
-import { createEffect, For, useContext } from "solid-js";
+import { createMemo, For, useContext } from "solid-js";
 import { CurrentTaskContext } from "~/context/current-task";
 import { tasksCollection } from "~/lib/db";
-import type { Timescale } from "~/lib/timescales";
-import { asInstant, cn } from "~/lib/utils";
+import { timescaleFromType, type Timescale } from "~/lib/timescales";
+import { asInstant, cn, currentTz } from "~/lib/utils";
 import { Chip } from "./task";
 import { Button } from "./ui/button";
 
@@ -14,21 +14,30 @@ export function Timeframe(props: {
 	collapsible?: boolean;
 	accented?: boolean;
 }) {
-	const instance = props.timescale.instance(props.time);
+	const instance = createMemo(() => props.timescale.instance(props.time));
+	const duration = createMemo(() => instance().end.since(instance().start));
 	const query = useLiveQuery((q) =>
 		q
 			.from({ task: tasksCollection })
 			.fn.where(({ task }) => {
-				console.log(task.timeframe_start);
+				// exclude root task
+				if (task.timescale === "all_time") {
+					return false;
+				}
+				const startInstant = asInstant(task.timeframe_start);
+				const startZoned = startInstant.toZonedDateTimeISO(currentTz());
+				const taskDuration = timescaleFromType(task.timescale)
+					.instance(startZoned)
+					.end.since(startZoned);
+				if (Temporal.Duration.compare(taskDuration, duration()) < 0) {
+					return false;
+				}
 				return (
 					Temporal.Instant.compare(
-						asInstant(task.timeframe_start),
-						instance.start.toInstant(),
+						startInstant,
+						instance().start.toInstant(),
 					) >= 0 &&
-					Temporal.Instant.compare(
-						asInstant(task.timeframe_start),
-						instance.end.toInstant(),
-					) < 0
+					Temporal.Instant.compare(startInstant, instance().end.toInstant()) < 0
 				);
 			})
 			.select(({ task }) => ({
@@ -37,13 +46,6 @@ export function Timeframe(props: {
 			})),
 	);
 	const currentTaskCtx = useContext(CurrentTaskContext);
-	createEffect(() => {
-		// console.log(
-		// 	query(),
-		// 	instance.start.toInstant().toString(),
-		// 	instance.end.toInstant().toString(),
-		// );
-	});
 
 	return (
 		<button
@@ -58,7 +60,7 @@ export function Timeframe(props: {
 				if (!currentTaskCtx) {
 					return;
 				}
-				currentTaskCtx.newChildAt(instance);
+				currentTaskCtx.newChildAt(instance());
 			}}
 		>
 			<div
@@ -74,7 +76,7 @@ export function Timeframe(props: {
 						"font-bold": props.accented,
 					}}
 				>
-					{instance.name}
+					{instance().name}
 				</p>
 				<Button
 					class="px-1 py-0 h-min aspect-square text-primary/30"
@@ -83,7 +85,7 @@ export function Timeframe(props: {
 						if (!currentTaskCtx) {
 							return;
 						}
-						currentTaskCtx.newChildAt(instance);
+						currentTaskCtx.newChildAt(instance());
 					}}
 				>
 					＋
@@ -96,7 +98,7 @@ export function Timeframe(props: {
 							blocked={false}
 							{...task}
 							onClick={() => {
-								console.log("clicked!");
+								currentTaskCtx?.selectTask(task.id);
 							}}
 						/>
 					)}

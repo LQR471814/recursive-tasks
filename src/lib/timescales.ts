@@ -291,7 +291,7 @@ export function timescaleTypeOf(timescale: Timescale): Enums<"timescale_type"> {
 		case daypart:
 			return "daypart";
 	}
-	throw new Error("unknown timescale!");
+	throw new Error(`unknown timescale! ${timescale.name}`);
 }
 
 export function timescaleFromType(type: Enums<"timescale_type">): Timescale {
@@ -311,7 +311,7 @@ export function timescaleFromType(type: Enums<"timescale_type">): Timescale {
 		case "daypart":
 			return daypart;
 	}
-	throw new Error("unknown timescale!");
+	throw new Error(`unknown timescale! ${type}`);
 }
 
 export const hierarchy = [

@@ -15,10 +15,14 @@ export function Chip(props: {
 			case "dropped":
 				return "bg-red-500";
 		}
-		return ""
+		return "";
 	});
 	return (
-		<div class="flex items-center gap-2 rounded-md border border-muted shadow-sm px-2">
+		<button
+			type="button"
+			class="flex items-center gap-2 rounded-md border shadow-sm px-2 cursor-default hover:bg-primary/5 transition-colors"
+			onClick={props.onClick}
+		>
 			<div
 				classList={{
 					"aspect-square": true,
@@ -28,6 +32,6 @@ export function Chip(props: {
 				}}
 			/>
 			{props.name}
-		</div>
+		</button>
 	);
 }
