@@ -37,17 +37,17 @@ export type Database = {
       executor: {
         Row: {
           comments: string
-          id: number
+          id: string
           name: string
         }
         Insert: {
           comments: string
-          id?: never
+          id: string
           name: string
         }
         Update: {
           comments?: string
-          id?: never
+          id?: string
           name?: string
         }
         Relationships: []
@@ -55,17 +55,17 @@ export type Database = {
       executor_occupied: {
         Row: {
           end: string
-          executor_id: number
+          executor_id: string
           start: string
         }
         Insert: {
           end: string
-          executor_id: number
+          executor_id: string
           start: string
         }
         Update: {
           end?: string
-          executor_id?: number
+          executor_id?: string
           start?: string
         }
         Relationships: [
@@ -80,40 +80,40 @@ export type Database = {
       }
       task: {
         Row: {
-          assigned_to: number | null
+          assigned_to: string | null
           comments: string
           expected: number
-          id: number
+          id: string
           implementation: Database["public"]["Enums"]["implementation_type"]
           name: string
           optimistic: number
-          parent_id: number
+          parent_id: string
           pessimistic: number
           timeframe_start: string
           timescale: Database["public"]["Enums"]["timescale_type"]
         }
         Insert: {
-          assigned_to?: number | null
+          assigned_to?: string | null
           comments: string
           expected: number
-          id?: number
+          id: string
           implementation: Database["public"]["Enums"]["implementation_type"]
           name: string
           optimistic: number
-          parent_id: number
+          parent_id: string
           pessimistic: number
           timeframe_start: string
           timescale: Database["public"]["Enums"]["timescale_type"]
         }
         Update: {
-          assigned_to?: number | null
+          assigned_to?: string | null
           comments?: string
           expected?: number
-          id?: number
+          id?: string
           implementation?: Database["public"]["Enums"]["implementation_type"]
           name?: string
           optimistic?: number
-          parent_id?: number
+          parent_id?: string
           pessimistic?: number
           timeframe_start?: string
           timescale?: Database["public"]["Enums"]["timescale_type"]

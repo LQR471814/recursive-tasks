@@ -1,10 +1,10 @@
 import {
 	type AnyPgColumn,
-	bigint,
 	pgEnum,
 	pgTable,
 	real,
 	timestamp,
+	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
 
@@ -25,15 +25,15 @@ export const implementation_type = pgEnum("implementation_type", [
 ]);
 
 export const taskTable = pgTable("task", {
-	id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+	id: uuid().primaryKey(),
 	name: varchar({ length: 256 }).notNull(),
 	comments: varchar().notNull(),
 
 	timescale: timescale_type().notNull(),
 	timeframe_start: timestamp().notNull(),
 
-	assigned_to: bigint({ mode: "number" }).references(() => executorTable.id),
-	parent_id: bigint({ mode: "number" })
+	assigned_to: uuid().references(() => executorTable.id),
+	parent_id: uuid()
 		.notNull()
 		.references((): AnyPgColumn => taskTable.id, {
 			onUpdate: "cascade",
@@ -47,13 +47,13 @@ export const taskTable = pgTable("task", {
 });
 
 export const executorTable = pgTable("executor", {
-	id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
+	id: uuid().primaryKey(),
 	name: varchar().notNull(),
 	comments: varchar().notNull(),
 });
 
 export const executorOccupied = pgTable("executor_occupied", {
-	executor_id: bigint({ mode: "number" })
+	executor_id: uuid()
 		.notNull()
 		.references(() => executorTable.id),
 	start: timestamp().notNull(),

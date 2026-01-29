@@ -45,37 +45,37 @@ export const graphqlPublicGraphqlReturnsSchema = jsonSchema;
 
 export const publicExecutorRowSchema = z.object({
   comments: z.string(),
-  id: z.number(),
+  id: z.string().default(() => crypto.randomUUID()),
   name: z.string(),
 });
 
 export const publicExecutorInsertSchema = z.object({
   comments: z.string(),
-  id: z.never().optional(),
+  id: z.string().default(() => crypto.randomUUID()),
   name: z.string(),
 });
 
 export const publicExecutorUpdateSchema = z.object({
   comments: z.string().optional(),
-  id: z.never().optional(),
+  id: z.string().default(() => crypto.randomUUID()).optional(),
   name: z.string().optional(),
 });
 
 export const publicExecutorOccupiedRowSchema = z.object({
   end: z.string(),
-  executor_id: z.number(),
+  executor_id: z.string().default(() => crypto.randomUUID()),
   start: z.string(),
 });
 
 export const publicExecutorOccupiedInsertSchema = z.object({
   end: z.string(),
-  executor_id: z.number(),
+  executor_id: z.string().default(() => crypto.randomUUID()),
   start: z.string(),
 });
 
 export const publicExecutorOccupiedUpdateSchema = z.object({
   end: z.string().optional(),
-  executor_id: z.number().optional(),
+  executor_id: z.string().default(() => crypto.randomUUID()).optional(),
   start: z.string().optional(),
 });
 
@@ -90,42 +90,42 @@ export const publicExecutorOccupiedRelationshipsSchema = z.tuple([
 ]);
 
 export const publicTaskRowSchema = z.object({
-  assigned_to: z.number().nullable(),
+  assigned_to: z.string().nullable(),
   comments: z.string(),
   expected: z.number(),
-  id: z.number(),
+  id: z.string().default(() => crypto.randomUUID()),
   implementation: publicImplementationTypeSchema,
   name: z.string(),
   optimistic: z.number(),
-  parent_id: z.number(),
+  parent_id: z.string().default(() => crypto.randomUUID()),
   pessimistic: z.number(),
   timeframe_start: z.string().transform((v) => Temporal.Instant.from(v).toZonedDateTimeISO(Intl.DateTimeFormat().resolvedOptions().timeZone)),
   timescale: publicTimescaleTypeSchema,
 });
 
 export const publicTaskInsertSchema = z.object({
-  assigned_to: z.number().optional().nullable(),
+  assigned_to: z.string().optional().nullable(),
   comments: z.string(),
   expected: z.number(),
-  id: z.number().optional(),
+  id: z.string().default(() => crypto.randomUUID()),
   implementation: publicImplementationTypeSchema,
   name: z.string(),
   optimistic: z.number(),
-  parent_id: z.number(),
+  parent_id: z.string().default(() => crypto.randomUUID()),
   pessimistic: z.number(),
   timeframe_start: z.string().transform((v) => Temporal.Instant.from(v).toZonedDateTimeISO(Intl.DateTimeFormat().resolvedOptions().timeZone)),
   timescale: publicTimescaleTypeSchema,
 });
 
 export const publicTaskUpdateSchema = z.object({
-  assigned_to: z.number().optional().nullable(),
+  assigned_to: z.string().optional().nullable(),
   comments: z.string().optional(),
   expected: z.number().optional(),
-  id: z.number().optional(),
+  id: z.string().default(() => crypto.randomUUID()).optional(),
   implementation: publicImplementationTypeSchema.optional(),
   name: z.string().optional(),
   optimistic: z.number().optional(),
-  parent_id: z.number().optional(),
+  parent_id: z.string().default(() => crypto.randomUUID()).optional(),
   pessimistic: z.number().optional(),
   timeframe_start: z.string().transform((v) => Temporal.Instant.from(v).toZonedDateTimeISO(Intl.DateTimeFormat().resolvedOptions().timeZone)).optional(),
   timescale: publicTimescaleTypeSchema.optional(),

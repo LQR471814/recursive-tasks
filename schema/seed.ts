@@ -1,10 +1,11 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { taskTable } from "./schema";
+import { ROOT_ID } from "../src/lib/constants";
 
 const sql = postgres(
 	process.env.DB_URL ??
-		"postgresql://postgres:postgres@127.0.0.1:54322/postgres",
+	"postgresql://postgres:postgres@127.0.0.1:54322/postgres",
 );
 const db = drizzle({ client: sql });
 
@@ -13,17 +14,17 @@ async function main() {
 		.insert(taskTable)
 		.values([
 			{
-				id: 1,
+				id: ROOT_ID,
 				name: "Root",
 				comments: "The root task which all tasks originate from.",
-				parent_id: 1,
+				parent_id: ROOT_ID,
 				assigned_to: null,
 				// the epoch
 				timeframe_start: new Date(0),
 				timescale: "all_time",
-				optimistic: 1,
-				expected: 1,
-				pessimistic: 1,
+				optimistic: 100,
+				expected: 100,
+				pessimistic: 100,
 				implementation: "children",
 			},
 		])

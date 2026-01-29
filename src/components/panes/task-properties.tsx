@@ -2,7 +2,8 @@
 
 import { eq, useLiveQuery } from "@tanstack/solid-db";
 import type { AnyFieldApi, FieldApi } from "@tanstack/solid-form";
-import { createEffect, createMemo, Match, Switch, useContext } from "solid-js";
+import { createMemo, Match, Switch, useContext } from "solid-js";
+import { ROOT_ID } from "src/lib/constants";
 import { tasksCollection } from "src/lib/db";
 import { type Timescale, timescaleFromType } from "src/lib/timescales";
 import {
@@ -195,7 +196,7 @@ function FormFields(props: {
 										<FormTextField
 											field={field()}
 											transform={(v) => parseFloat(v)}
-											label="Optimistic"
+											label="Optimistic (h)"
 											type="text"
 											placeholder="Hours"
 										/>
@@ -211,7 +212,7 @@ function FormFields(props: {
 										<FormTextField
 											field={field()}
 											transform={(v) => parseFloat(v)}
-											label="Expected"
+											label="Expected (h)"
 											type="text"
 											placeholder="Hours"
 										/>
@@ -227,7 +228,7 @@ function FormFields(props: {
 										<FormTextField
 											field={field()}
 											transform={(v) => parseFloat(v)}
-											label="Pessimistic"
+											label="Pessimistic (h)"
 											type="text"
 											placeholder="Hours"
 										/>
@@ -302,9 +303,6 @@ function FormFields(props: {
 							.where(({ tasks }) => eq(tasks.id, field().state.value)),
 					);
 					const parent = createMemo(() => parentQuery()[0]);
-					createEffect(() => {
-						console.log(parentOptions());
-					});
 					return (
 						<div class="max-w-[220px]">
 							<label class="text-sm font-medium" for={field().name}>
@@ -319,7 +317,7 @@ function FormFields(props: {
 								onChange={(newParent) => {
 									if (!newParent) {
 										// root id
-										field().handleChange(1);
+										field().handleChange(ROOT_ID);
 										return;
 									}
 									field().handleChange(newParent.id);
@@ -353,8 +351,9 @@ function Header(props: {
 
 function Form(props: {
 	title: string;
-	actionTitle: string;
 	key: keyof CurrentTaskValue["forms"];
+	actionTitle: string;
+	onAction(): void;
 }) {
 	const taskCtx = useContext(CurrentTaskContext);
 	if (!taskCtx) {
@@ -388,9 +387,13 @@ function Form(props: {
 			<FormFields form={form} />
 			<Button
 				class="w-min"
-				onClick={() => {
-					form.validateAllFields("submit");
-					console.log("submitted");
+				onClick={async () => {
+					const results = await form.validateAllFields("submit");
+					const valid = results.length === 0;
+					if (!valid) {
+						return;
+					}
+					props.onAction();
 				}}
 			>
 				{props.actionTitle}
@@ -415,10 +418,29 @@ export function TaskProperties() {
 		<div class="flex flex-col gap-2 w-full h-full p-2">
 			<Switch>
 				<Match when={taskCtx.shown() === "new_child"}>
-					<Form title="Creating task..." actionTitle="Create" key="creation" />
+					<Form
+						title="Creating task..."
+						actionTitle="Create"
+						key="creation"
+						onAction={() => {
+							const { id, ...values } = taskCtx.forms.creation.state.values;
+							tasksCollection.insert([
+								{
+									...values,
+									timeframe_start:
+										taskCtx.forms.creation.state.values.timeframe_start.toString(),
+								},
+							]);
+						}}
+					/>
 				</Match>
 				<Match when={taskCtx.shown() === "selected"}>
-					<Form title="Editing task..." actionTitle="Save" key="edit" />
+					<Form
+						title="Editing task..."
+						actionTitle="Save"
+						key="edit"
+						onAction={() => { }}
+					/>
 				</Match>
 				<Match when={taskCtx.shown() === "none"}>
 					<p class="m-auto">No task selected.</p>

@@ -11,6 +11,7 @@ import {
 	type ParentComponent,
 } from "solid-js";
 import { tasksCollection } from "src/lib/db";
+import { ROOT_ID } from "~/lib/constants";
 import { type TimescaleInstance, timescaleTypeOf } from "~/lib/timescales";
 
 // TODO: improve this hack!
@@ -26,22 +27,21 @@ function currentTaskValue() {
 		"none",
 	);
 	const [selectedTaskId, setSelectedTaskId] = createSignal<
-		number | undefined
+		string | undefined
 	>();
 
 	function form() {
 		return createForm(() => ({
 			defaultValues: {
-				id: -1,
 				name: "",
 				comments: "",
 				implementation: "hours",
-				optimistic: 0,
-				expected: 0,
-				pessimistic: 0,
+				optimistic: 0.5,
+				expected: 1,
+				pessimistic: 1.5,
 				timeframe_start: Temporal.Now.zonedDateTimeISO(),
 				timescale: "week",
-				parent_id: 1,
+				parent_id: ROOT_ID,
 				assigned_to: null,
 			} as TaskFields,
 			onSubmit: ({ value }) => {
@@ -60,7 +60,7 @@ function currentTaskValue() {
 		shown,
 		selectedTaskId,
 		forms: { edit, creation },
-		selectTask(taskId: number) {
+		selectTask(taskId: string) {
 			const task = tasksCollection.get(taskId);
 			if (!task) throw new Error("taskId is invalid");
 			batch(() => {
