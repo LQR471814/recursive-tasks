@@ -14,7 +14,7 @@ function Display(props: {
 		<button
 			type="button"
 			class={cn(
-				"flex items-center gap-2",
+				"flex items-center gap-2 max-w-[180px]",
 				"rounded-md border shadow-sm px-2 hover:bg-primary/5 transition-colors bg-background",
 				"cursor-default touch-none text-sm",
 				props.class,
@@ -30,7 +30,9 @@ function Display(props: {
 					[props.color]: true,
 				}}
 			/>
-			{props.name}
+			<p class="text-start overflow-hidden line-clamp-2 text-ellipsis">
+				{props.name}
+			</p>
 		</button>
 	);
 }
