@@ -93,7 +93,17 @@ function currentTaskValue() {
 			});
 		},
 		resetNewChild() {
-			creation.reset();
+			creation.reset({
+				...creation.state.values,
+				name: "",
+				comments: "",
+				optimistic: 0.5,
+				expected: 1,
+				pessimistic: 1.5,
+				implementation: "hours",
+				parent_id: ROOT_ID,
+				assigned_to: null,
+			});
 		},
 		createTask() {
 			tasksCollection.insert([
@@ -124,9 +134,9 @@ function currentTaskValue() {
 				title: `Task deleted: ${edit.state.values.name}`,
 				variant: "success",
 				duration: 3000,
-			})
-			edit.reset()
-			setShown("none")
+			});
+			edit.reset();
+			setShown("none");
 		},
 		async move(
 			id: string,

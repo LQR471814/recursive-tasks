@@ -444,6 +444,11 @@ export function Properties() {
 						actionTitle="Create"
 						key="creation"
 						onAction={taskCtx.createTask}
+						secondaryAction={{
+							class: "bg-red-600 hover:bg-red-500",
+							title: "Reset",
+							onAction: taskCtx.resetNewChild,
+						}}
 					/>
 				</Match>
 				<Match when={taskCtx.shown() === "selected"}>
