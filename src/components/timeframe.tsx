@@ -88,7 +88,7 @@ export function Timeframe(props: {
 					＋
 				</Button>
 			</div>
-			<div class="flex flex-col gap-2 px-2 py-1 pb-8">
+			<div class="flex flex-col gap-1 px-1 py-1 pb-8">
 				<For each={task()}>
 					{(task) => (
 						<TaskChip
