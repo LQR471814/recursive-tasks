@@ -209,7 +209,7 @@ export class Daypart implements Timescale {
 		});
 		const end =
 			dayPart.end === 24
-				? start.with({ hour: 0, day: start.day + 1 })
+				? start.with({ hour: 0 }).add({ days: 1 })
 				: start.with({ hour: dayPart.end });
 		return {
 			name: dayPart.name,
