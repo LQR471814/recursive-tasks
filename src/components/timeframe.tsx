@@ -36,9 +36,10 @@ export function Timeframe(props: {
 	const instance = createMemo(() => props.timescale.instance(props.time));
 
 	const tasks = useLiveQuery((q) => {
-		// for some reason, this isn't rerun unless this dependency is
+		// for some reason, this isn't rerun unless the dependencies are
 		// explicitly stated here
-		instance();
+		instance().start;
+		instance().end;
 		return q.from({ task: tasksCollection }).fn.where(({ task }) => {
 			// exclude root task
 			if (task.timescale === "all_time") {
