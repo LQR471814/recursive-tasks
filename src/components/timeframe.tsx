@@ -9,6 +9,7 @@ import {
 } from "@tanstack/solid-db";
 import { createDroppable } from "@thisbeyond/solid-dnd";
 import {
+	type Accessor,
 	createEffect,
 	createMemo,
 	createSignal,
@@ -17,9 +18,9 @@ import {
 	Show,
 	Switch,
 	useContext,
-	type Accessor,
 } from "solid-js";
 import { TaskChipContext } from "src/context/task-chip";
+import { ViewContext } from "src/context/view";
 import { evalStats } from "src/workers/stats-worker.client";
 import { CurrentTaskContext } from "~/context/current-task";
 import { tasksCollection } from "~/lib/db";
@@ -27,7 +28,8 @@ import { type Timescale, timescaleTypeOf } from "~/lib/timescales";
 import { cn } from "~/lib/utils";
 import { TaskChip } from "./task";
 import { Button } from "./ui/button";
-import { ViewContext } from "src/context/view";
+
+const cachedPercentiles = new Map<string, number | Promise<number>>();
 
 function usePercentileDuration(
 	percentile: Accessor<number>,
@@ -40,30 +42,47 @@ function usePercentileDuration(
 		}[]
 	>,
 ) {
-	const [duration, setDuration] = createSignal<number | null>(null);
-	const [error, setError] = createSignal<Error | null>(null);
+	const [state, setState] = createSignal<
+		{ duration: number; error: null } | { duration: null; error: Error } | null
+	>(null);
+
 	createEffect(() => {
-		tasks().map((t) => ({
-			o: t.optimistic,
-			e: t.expected,
-			p: t.pessimistic,
-		}));
-		const ids = tasks().map((t) => t.id);
-		setDuration(null);
-		setError(null);
-		evalStats(ids, {
-			type: "percentile",
-			percentile: percentile(),
-		})
+		let hash = "";
+		for (const t of tasks()) {
+			hash += `${t.optimistic}:${t.expected}:${t.pessimistic},`;
+		}
+		const cached = cachedPercentiles.get(hash);
+		if (typeof cached === "number") {
+			setState({ duration: cached, error: null });
+			return;
+		}
+
+		setState(null);
+
+		const promise =
+			cached instanceof Promise
+				? cached
+				: evalStats(
+						tasks().map((t) => t.id),
+						{
+							type: "percentile",
+							percentile: percentile(),
+						},
+					);
+
+		cachedPercentiles.set(hash, promise);
+
+		promise
 			.then((dur) => {
-				setDuration(dur);
+				setState({ duration: dur, error: null });
+				cachedPercentiles.set(hash, dur);
 			})
 			.catch((err) => {
 				console.error(err);
-				setError(err);
+				setState({ duration: null, error: err });
 			});
 	});
-	return { duration, error };
+	return state;
 }
 
 export function Timeframe(props: {
@@ -151,6 +170,19 @@ export function Timeframe(props: {
 	const allTasks = createMemo(() => [...tasks(), ...otherTasks()]);
 	// const otherTaskDuration = usePercentileDuration(() => percentile, otherTasks);
 	const totalTaskDuration = usePercentileDuration(() => percentile, allTasks);
+	const duration = createMemo(() => {
+		const dur = totalTaskDuration();
+		if (!dur) {
+			return null;
+		}
+		if (dur.duration === null) {
+			return dur.error;
+		}
+		return {
+			filledHours: dur.duration,
+			totalHours: timeframeDuration().total({ unit: "hours" }),
+		} satisfies DurationStats;
+	});
 
 	return (
 		<Display
@@ -172,15 +204,7 @@ export function Timeframe(props: {
 					currentTaskCtx?.selectTask(t.id);
 				},
 			}))}
-			duration={
-				totalTaskDuration.duration() !== null
-					? {
-							// biome-ignore lint/style/noNonNullAssertion: this has already been checked
-							filledHours: totalTaskDuration.duration()!,
-							totalHours: timeframeDuration().total({ unit: "hours" }),
-						}
-					: totalTaskDuration.error()
-			}
+			duration={duration()}
 			hiddenTasks={otherTasks().length}
 			// hiddenTasksDuration={otherTaskDuration.duration()}
 		/>
