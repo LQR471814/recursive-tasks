@@ -50,7 +50,7 @@ export function Timeframe(props: {
 			const startInstant = asInstant(task.timeframe_start);
 			return (
 				Temporal.Instant.compare(startInstant, instance().start.toInstant()) >=
-					0 &&
+				0 &&
 				Temporal.Instant.compare(startInstant, instance().end.toInstant()) < 0
 			);
 		});
@@ -109,10 +109,10 @@ export function Timeframe(props: {
 			duration={
 				p95dur() !== null
 					? {
-							// biome-ignore lint/style/noNonNullAssertion: this has already been checked
-							filledHours: p95dur()!,
-							totalHours: timeframeDuration().total({ unit: "hours" }),
-						}
+						// biome-ignore lint/style/noNonNullAssertion: this has already been checked
+						filledHours: p95dur()!,
+						totalHours: timeframeDuration().total({ unit: "hours" }),
+					}
 					: p95err()
 			}
 		/>
@@ -150,7 +150,7 @@ function Display(props: {
 				props.class,
 			)}
 			classList={{ "bg-muted": props.isDroppingOver }}
-			onDblClick={() => {}}
+			onDblClick={() => { }}
 			ref={props.ref}
 		>
 			<div
