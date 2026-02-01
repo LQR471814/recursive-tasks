@@ -57,6 +57,8 @@ export function Timeframe(props: {
 	const [p95dur, setP95Dur] = createSignal<number | null>(null);
 	const [p95err, setP95Err] = createSignal<Error | null>(null);
 	createEffect(() => {
+		// effect has implicit dependency on task parameters, so we explicitly
+		// specify them here
 		tasks().map((t) => ({
 			o: t.optimistic,
 			e: t.expected,
