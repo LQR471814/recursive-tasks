@@ -66,6 +66,8 @@ export function Timeframe(props: {
 			p: t.pessimistic,
 		}));
 		const ids = tasks().map((t) => t.id);
+		setP95Dur(null);
+		setP95Err(null);
 		evalStats(ids, {
 			type: "percentile",
 			percentile: 95,
