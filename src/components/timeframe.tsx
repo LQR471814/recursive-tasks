@@ -16,6 +16,7 @@ import { type Timescale, timescaleTypeOf } from "~/lib/timescales";
 import { asInstant, cn } from "~/lib/utils";
 import { TaskChip } from "./task";
 import { Button } from "./ui/button";
+import { TaskChipContext } from "src/context/task-chip";
 
 export function Timeframe(props: {
 	class?: string;
@@ -24,8 +25,9 @@ export function Timeframe(props: {
 	collapsible?: boolean;
 	accented?: boolean;
 }) {
+	const namespace = useContext(TaskChipContext);
 	const droppable = createDroppable(
-		`${props.timescale.name} ${props.time.toString()}`,
+		`${namespace?.namespace ?? "null_namespace"} ${props.timescale.name} ${props.time.toString()}`,
 		{
 			time: () => props.time,
 			timescale: () => props.timescale,
@@ -33,8 +35,11 @@ export function Timeframe(props: {
 	);
 	const instance = createMemo(() => props.timescale.instance(props.time));
 
-	const tasks = useLiveQuery((q) =>
-		q.from({ task: tasksCollection }).fn.where(({ task }) => {
+	const tasks = useLiveQuery((q) => {
+		// for some reason, this isn't rerun unless this dependency is
+		// explicitly stated here
+		instance();
+		return q.from({ task: tasksCollection }).fn.where(({ task }) => {
 			// exclude root task
 			if (task.timescale === "all_time") {
 				return false;
@@ -48,8 +53,8 @@ export function Timeframe(props: {
 				0 &&
 				Temporal.Instant.compare(startInstant, instance().end.toInstant()) < 0
 			);
-		}),
-	);
+		});
+	});
 	const currentTaskCtx = useContext(CurrentTaskContext);
 
 	const timeframeDuration = createMemo(() =>
