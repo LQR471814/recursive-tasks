@@ -37,7 +37,7 @@ function currentTaskValue() {
 		string | undefined
 	>();
 
-	function form() {
+	function form(onsubmit: () => void) {
 		return createForm(() => ({
 			defaultValues: {
 				name: "",
@@ -51,10 +51,32 @@ function currentTaskValue() {
 				parent_id: ROOT_ID,
 				assigned_to: null,
 			} as TaskFields,
+			onSubmit: onsubmit,
 		}));
 	}
-	const edit = form();
-	const creation = form();
+	const edit = form(() => {
+		tasksCollection.update(edit.state.values.id, (val) => {
+			Object.assign(val, edit.state.values);
+		});
+		showToast({
+			title: `Task updated: ${edit.state.values.name}`,
+			variant: "success",
+			duration: 3000,
+		});
+	});
+	const creation = form(() => {
+		tasksCollection.insert([
+			{
+				...creation.state.values,
+				timeframe_start: creation.state.values.timeframe_start.toString(),
+			},
+		]);
+		showToast({
+			title: `Task created: ${creation.state.values.name}`,
+			variant: "success",
+			duration: 3000,
+		});
+	});
 
 	return {
 		shown,
@@ -108,29 +130,6 @@ function currentTaskValue() {
 				title: "Fields reset.",
 				variant: "success",
 				duration: 1500,
-			});
-		},
-		createTask() {
-			tasksCollection.insert([
-				{
-					...creation.state.values,
-					timeframe_start: creation.state.values.timeframe_start.toString(),
-				},
-			]);
-			showToast({
-				title: `Task created: ${creation.state.values.name}`,
-				variant: "success",
-				duration: 3000,
-			});
-		},
-		saveTask() {
-			tasksCollection.update(edit.state.values.id, (val) => {
-				Object.assign(val, edit.state.values);
-			});
-			showToast({
-				title: `Task updated: ${edit.state.values.name}`,
-				variant: "success",
-				duration: 3000,
 			});
 		},
 		deleteTask() {

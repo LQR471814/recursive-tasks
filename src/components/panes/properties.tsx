@@ -354,7 +354,6 @@ function Form(props: {
 	title: string;
 	key: keyof CurrentTaskValue["forms"];
 	actionTitle: string;
-	onAction(): void;
 	secondaryAction?: {
 		class?: string;
 		title: string;
@@ -406,7 +405,7 @@ function Form(props: {
 						if (!valid) {
 							return;
 						}
-						props.onAction();
+						form.handleSubmit()
 					}}
 				>
 					{props.actionTitle}
@@ -443,7 +442,6 @@ export function Properties() {
 						title="Creating task..."
 						actionTitle="Create"
 						key="creation"
-						onAction={taskCtx.createTask}
 						secondaryAction={{
 							class: "bg-red-600 hover:bg-red-500",
 							title: "Reset",
@@ -456,7 +454,6 @@ export function Properties() {
 						title="Editing task..."
 						actionTitle="Save"
 						key="edit"
-						onAction={taskCtx.saveTask}
 						secondaryAction={{
 							class: "bg-red-600 hover:bg-red-500",
 							title: "Delete",
