@@ -179,7 +179,7 @@ function FormFields(props: {
 										field().handleChange(value);
 								}
 							}}
-							defaultValue={field().state.value}
+							value={field().state.value}
 							class="w-[400px]"
 						>
 							<TabsList class="grid w-full grid-cols-2">

@@ -2,7 +2,7 @@
 
 import { createFilter } from "@kobalte/core";
 import type { Fn, Pipe, Tuples, Unions } from "hotscript";
-import { createSignal, createMemo, createEffect } from "solid-js";
+import { createMemo, createSignal } from "solid-js";
 import {
 	Combobox,
 	ComboboxContent,
