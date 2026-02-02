@@ -317,14 +317,14 @@ export function timescaleFromType(type: Enums<"timescale_type">): Timescale {
 }
 
 export const hierarchyTypes: Enums<"timescale_type">[] = [
-	"ten_year",
-	"five_year",
-	"year",
-	"quarter",
-	"month",
-	"week",
-	"day",
 	"daypart",
+	"day",
+	"week",
+	"month",
+	"quarter",
+	"year",
+	"five_year",
+	"ten_year",
 ];
 
 export const hierarchy = [

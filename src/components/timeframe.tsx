@@ -23,11 +23,15 @@ import { ViewContext } from "src/context/view";
 import { evalStats } from "src/workers/stats-worker.client";
 import { CurrentTaskContext, type DroppableData } from "~/context/current-task";
 import { tasksCollection } from "~/lib/db";
-import { type Timescale, timescaleTypeOf } from "~/lib/timescales";
+import {
+	type Timescale,
+	timescaleTypeOf,
+	hierarchyTypes,
+} from "~/lib/timescales";
 import { cn } from "~/lib/utils";
 import { TaskChip } from "./task";
 import { Button } from "./ui/button";
-import { TaskNode, taskTree } from "src/lib/db/task-tree";
+import type { Enums, Tables } from "src/lib/supabase/types.gen";
 
 const cachedPercentiles = new Map<string, number | Promise<number>>();
 
@@ -85,18 +89,27 @@ function usePercentileDuration(
 	return state;
 }
 
-/**
- * for a given timeframe, want to find the following data:
- *
- * - whole tree of tasks under this timeframe
- * - from there, the first level of tasks can be derived
- *
- * want to listen to every task in the tree
- */
-
-// biome-ignore lint/style/noNonNullAssertion: will throw on undefined
-const idx = tasksCollection.indexes.get(1)!;
-if (!idx) throw new Error("tasksCollection doesn't have a 1st index");
+function getTaskAnalysis(
+	currentTimescale: Enums<"timescale_type">,
+	allTasks: Tables<"task">[],
+) {
+	// find all tasks with a parent_id not in the list
+	const ids = new Set<string>();
+	for (const t of allTasks) {
+		ids.add(t.id);
+	}
+	let hidden = 0;
+	const indep: Tables<"task">[] = [];
+	for (const t of allTasks) {
+		if (!ids.has(t.parent_id)) {
+			if (t.timescale !== currentTimescale) {
+				hidden++;
+			}
+			indep.push(t);
+		}
+	}
+	return { indep, hidden };
+}
 
 export function Timeframe(props: {
 	class?: string;
@@ -131,6 +144,9 @@ export function Timeframe(props: {
 		// query's where callback)
 		const tfstart = instance().start.epochMilliseconds;
 		const tfend = instance().end.epochMilliseconds;
+		const currentTimescaleHierarchyIdx = hierarchyTypes.indexOf(
+			timescaleType(),
+		);
 		return q
 			.from({ task: tasksCollection })
 			.where(({ task }) =>
@@ -139,6 +155,11 @@ export function Timeframe(props: {
 					gte(task.timeframe_start, tfstart),
 					lt(task.timeframe_start, tfend),
 				),
+			)
+			.fn.where(
+				({ task }) =>
+					hierarchyTypes.indexOf(task.timescale) <=
+					currentTimescaleHierarchyIdx,
 			);
 	});
 
@@ -150,70 +171,30 @@ export function Timeframe(props: {
 			.where(({ task }) => eq(task.timescale, timescaleType())),
 	);
 
-	function getTasks() {
-		return Array.from(shownTasksCollection.values());
-	}
-	function getSubtreeIds(shownTasks: { id: string }[]) {
-		const subtreeIds = new Set<string>();
-		const getIds = ({ node, children }: TaskNode) => {
-			if (node) {
-				subtreeIds.add(node.id);
-			}
-			for (const c of children) {
-				getIds(c);
-			}
-		};
-		for (const { id } of shownTasks) {
-			const node = taskTree.lookup(id)();
-			getIds(node);
-		}
-		return subtreeIds;
-	}
-	const [tasks, setTasks] = createSignal(getTasks());
-	const [subtreeIds, setSubtreeIds] = createSignal(getSubtreeIds(tasks()));
-	let i = 0;
+	const getShownTasks = () => Array.from(shownTasksCollection.values());
+	const getTimeframeTasks = () => Array.from(tasksInTimeframe.values());
+	const [tasks, setTasks] = createSignal(getShownTasks());
+	const [taskAnalysis, setTaskAnalysis] = createSignal(
+		getTaskAnalysis(timescaleType(), getTimeframeTasks()),
+	);
 	const { unsubscribe: unsubShownTasks } =
 		shownTasksCollection.subscribeChanges(() => {
-			i++;
-			if (i > 300) {
-				console.log("stopped!");
-				return;
-			}
-			const foundTasks = getTasks();
+			const foundTasks = getShownTasks();
 			setTasks(foundTasks);
-			setSubtreeIds(getSubtreeIds(foundTasks));
+			setTaskAnalysis(getTaskAnalysis(timescaleType(), getTimeframeTasks()));
 		});
 	onCleanup(unsubShownTasks);
-
-	// other tasks include:
-	// - tasks which also occur within the timeframe but not the same timescale
-	// - tasks which are not children of the tasks in `tasks()`
-	const otherTasksCollection = createLiveQueryCollection((q) => {
-		// explicitly list implicit dependency here
-		tasks();
-		return q
-			.from({ task: tasksInTimeframe })
-			.fn.where(({ task }) => !subtreeIds().has(task.id));
-	});
-
-	function getOtherTasks() {
-		return Array.from(otherTasksCollection.values());
-	}
-	const [otherTasks, setOtherTasks] = createSignal(getOtherTasks());
-	const { unsubscribe: unsubOtherTasks } =
-		otherTasksCollection.subscribeChanges(() => {
-			setOtherTasks(getOtherTasks());
-		});
-	onCleanup(unsubOtherTasks);
 
 	// percentile computation
 
 	const viewCtx = useContext(ViewContext);
 	const percentile = viewCtx?.state.percentile ?? 95;
 
-	const allTasks = createMemo(() => [...tasks(), ...otherTasks()]);
 	// const otherTaskDuration = usePercentileDuration(() => percentile, otherTasks);
-	const totalTaskDuration = usePercentileDuration(() => percentile, allTasks);
+	const totalTaskDuration = usePercentileDuration(
+		() => percentile,
+		() => taskAnalysis().indep,
+	);
 	const duration = createMemo(() => {
 		const dur = totalTaskDuration();
 		if (!dur) {
@@ -251,7 +232,7 @@ export function Timeframe(props: {
 				},
 			}))}
 			duration={duration()}
-			hiddenTasks={otherTasks().length}
+			hiddenTasks={taskAnalysis().hidden}
 			// hiddenTasksDuration={otherTaskDuration.duration()}
 		/>
 	);

@@ -1,9 +1,9 @@
 # Todo
 
 - Correctness:
-    - [ ] Bug: Make "other tasks" of a timeframe not include
+    - [x] Bug: Make "other tasks" of a timeframe not include
       children of child tasks.
-    - [ ] Bug: Make estimates of parent task update when child
+    - [-] Bug: Make estimates of parent task update when child
       tasks update their durations.
 - Features:
     - [ ] Feature: Add UI to view the children tasks and total
@@ -13,6 +13,7 @@
       instead of proportions.
     - [ ] Bug: Sometimes tasks do not properly move when doing DND
       while operating the "Create Task" menu.
+    - [ ] Enhance: Refactor hierarchy enums to use a number.
 - Nice to haves:
     - [ ] Enhance: Make the UI higher contrast.
     - [ ] Enhance: Make a proper dark mode.
