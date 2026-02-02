@@ -1,5 +1,6 @@
 import { createDraggable } from "@thisbeyond/solid-dnd";
 import { createMemo, useContext } from "solid-js";
+import type { DragData } from "src/context/current-task";
 import { TaskChipContext } from "src/context/task-chip";
 import { cn } from "src/lib/utils";
 
@@ -50,7 +51,7 @@ export function TaskChip(props: {
 	);
 	try {
 		const draggable = createMemo(() =>
-			createDraggable(id(), { taskId: props.id }),
+			createDraggable(id(), { taskId: props.id } satisfies DragData),
 		);
 		return (
 			<Display

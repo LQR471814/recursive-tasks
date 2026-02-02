@@ -316,6 +316,17 @@ export function timescaleFromType(type: Enums<"timescale_type">): Timescale {
 	throw new Error(`unknown timescale! ${type}`);
 }
 
+export const hierarchyTypes: Enums<"timescale_type">[] = [
+	"ten_year",
+	"five_year",
+	"year",
+	"quarter",
+	"month",
+	"week",
+	"day",
+	"daypart",
+];
+
 export const hierarchy = [
 	decade,
 	fiveyear,

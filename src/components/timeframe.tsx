@@ -20,9 +20,13 @@ import {
 } from "solid-js";
 import { ViewContext } from "src/context/view";
 import { evalStats } from "src/workers/stats-worker.client";
-import { CurrentTaskContext } from "~/context/current-task";
+import { CurrentTaskContext, type DroppableData } from "~/context/current-task";
 import { tasksCollection } from "~/lib/db";
-import { type Timescale, timescaleTypeOf } from "~/lib/timescales";
+import {
+	hierarchyTypes,
+	type Timescale,
+	timescaleTypeOf,
+} from "~/lib/timescales";
 import { cn } from "~/lib/utils";
 import { TaskChip } from "./task";
 import { Button } from "./ui/button";
@@ -90,22 +94,25 @@ export function Timeframe(props: {
 	collapsible?: boolean;
 	accented?: boolean;
 }) {
+	// timeframe calculations
+
+	const instance = createMemo(() => props.timescale.instance(props.time));
+	const timescaleType = createMemo(() => timescaleTypeOf(props.timescale));
+	const hierarchyLevel = createMemo(
+		() => hierarchyTypes.length - hierarchyTypes.indexOf(timescaleType()),
+	);
+	const timeframeDuration = createMemo(() =>
+		instance().end.since(instance().start),
+	);
+
 	// dnd
 
 	const droppable = createDroppable(
 		`${props.timescale.name} ${props.time.toString()}`,
 		{
-			time: () => props.time,
+			timeframeStart: () => instance().start,
 			timescale: () => props.timescale,
-		},
-	);
-
-	// timeframe calculations
-
-	const instance = createMemo(() => props.timescale.instance(props.time));
-	const timescaleType = createMemo(() => timescaleTypeOf(props.timescale));
-	const timeframeDuration = createMemo(() =>
-		instance().end.since(instance().start),
+		} satisfies DroppableData,
 	);
 
 	// task
@@ -152,6 +159,11 @@ export function Timeframe(props: {
 			.from({ task: tasksInTimeframe })
 			.where(({ task }) => not(eq(task.timescale, timescaleType())))
 			.fn.where(({ task }) => {
+				const level =
+					hierarchyTypes.length - hierarchyTypes.indexOf(task.timescale);
+				if (level > hierarchyLevel()) {
+					return false;
+				}
 				let id = task.id;
 				let parent = task.parent_id;
 				while (id !== parent) {

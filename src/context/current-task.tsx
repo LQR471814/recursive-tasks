@@ -139,11 +139,11 @@ function currentTaskValue() {
 		},
 		async move(
 			id: string,
-			newTime: Temporal.ZonedDateTime,
+			newTimeframeStart: Temporal.ZonedDateTime,
 			newTimescale: Enums<"timescale_type">,
 		) {
 			tasksCollection.update(id, (val) => {
-				val.timeframe_start = newTime.epochMilliseconds;
+				val.timeframe_start = newTimeframeStart.epochMilliseconds;
 				val.timescale = newTimescale;
 			});
 		},
@@ -154,6 +154,15 @@ export type CurrentTaskValue = ReturnType<typeof currentTaskValue>;
 
 export const CurrentTaskContext = createContext<CurrentTaskValue>();
 
+export type DragData = {
+	taskId: string;
+};
+
+export type DroppableData = {
+	timeframeStart(): Temporal.ZonedDateTime;
+	timescale(): Timescale;
+};
+
 export const CurrentTaskProvider: ParentComponent = (props) => {
 	const value = currentTaskValue();
 	return (
@@ -162,16 +171,11 @@ export const CurrentTaskProvider: ParentComponent = (props) => {
 				if (!e.droppable) {
 					return;
 				}
-				const dragData = e.draggable.data as {
-					taskId: string;
-				};
-				const dropData = e.droppable.data as {
-					time(): Temporal.ZonedDateTime;
-					timescale(): Timescale;
-				};
+				const dragData = e.draggable.data as DragData;
+				const dropData = e.droppable.data as DroppableData;
 				value.move(
 					dragData.taskId,
-					dropData.time(),
+					dropData.timeframeStart(),
 					timescaleTypeOf(dropData.timescale()),
 				);
 				if (value.selectedTaskId() === dragData.taskId) {
