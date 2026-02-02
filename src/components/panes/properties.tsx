@@ -374,13 +374,10 @@ function Form(props: {
 			<form.Subscribe
 				selector={(state) => {
 					const timescale = timescaleFromType(state.values.timescale);
+					const start = asInstant(state.values.timeframe_start);
 					return {
-						start: asInstant(state.values.timeframe_start),
-						end: timescale.instance(
-							asInstant(state.values.timeframe_start).toZonedDateTimeISO(
-								currentTz(),
-							),
-						).end,
+						start: start,
+						end: timescale.instance(start.toZonedDateTimeISO(currentTz())).end,
 						timescale,
 					};
 				}}
@@ -405,7 +402,7 @@ function Form(props: {
 						if (!valid) {
 							return;
 						}
-						form.handleSubmit()
+						form.handleSubmit();
 					}}
 				>
 					{props.actionTitle}

@@ -46,7 +46,7 @@ function currentTaskValue() {
 				optimistic: 0.5,
 				expected: 1,
 				pessimistic: 1.5,
-				timeframe_start: Temporal.Now.instant().toString(),
+				timeframe_start: 0,
 				timescale: "week",
 				parent_id: ROOT_ID,
 				assigned_to: null,
@@ -65,12 +65,7 @@ function currentTaskValue() {
 		});
 	});
 	const creation = form(() => {
-		tasksCollection.insert([
-			{
-				...creation.state.values,
-				timeframe_start: creation.state.values.timeframe_start.toString(),
-			},
-		]);
+		tasksCollection.insert([creation.state.values]);
 		showToast({
 			title: `Task created: ${creation.state.values.name}`,
 			variant: "success",
@@ -104,7 +99,7 @@ function currentTaskValue() {
 				}));
 				creation.setFieldValue(
 					"timeframe_start",
-					timeframe.start.toInstant().toString(),
+					timeframe.start.toInstant().epochMilliseconds,
 				);
 				creation.setFieldMeta("timeframe_start", (prev) => ({
 					...prev,
@@ -147,11 +142,10 @@ function currentTaskValue() {
 			newTime: Temporal.ZonedDateTime,
 			newTimescale: Enums<"timescale_type">,
 		) {
-			const result = tasksCollection.update(id, (val) => {
-				val.timeframe_start = newTime.toInstant().toString();
+			tasksCollection.update(id, (val) => {
+				val.timeframe_start = newTime.epochMilliseconds;
 				val.timescale = newTimescale;
 			});
-			await result.isPersisted.promise;
 		},
 	};
 }

@@ -54,19 +54,19 @@ export type Database = {
       }
       executor_occupied: {
         Row: {
-          end: string
+          end: number
           executor_id: string
-          start: string
+          start: number
         }
         Insert: {
-          end: string
+          end: number
           executor_id: string
-          start: string
+          start: number
         }
         Update: {
-          end?: string
+          end?: number
           executor_id?: string
-          start?: string
+          start?: number
         }
         Relationships: [
           {
@@ -89,7 +89,7 @@ export type Database = {
           optimistic: number
           parent_id: string
           pessimistic: number
-          timeframe_start: string
+          timeframe_start: number
           timescale: Database["public"]["Enums"]["timescale_type"]
         }
         Insert: {
@@ -102,7 +102,7 @@ export type Database = {
           optimistic: number
           parent_id: string
           pessimistic: number
-          timeframe_start: string
+          timeframe_start: number
           timescale: Database["public"]["Enums"]["timescale_type"]
         }
         Update: {
@@ -115,7 +115,7 @@ export type Database = {
           optimistic?: number
           parent_id?: string
           pessimistic?: number
-          timeframe_start?: string
+          timeframe_start?: number
           timescale?: Database["public"]["Enums"]["timescale_type"]
         }
         Relationships: [

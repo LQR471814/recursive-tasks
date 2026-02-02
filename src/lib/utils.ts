@@ -26,7 +26,10 @@ export function currentTz() {
 	return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
-export function asInstant(dt: string | Date) {
+export function asInstant(dt: string | Date | number) {
+	if (typeof dt === "number") {
+		return Temporal.Instant.fromEpochMilliseconds(dt);
+	}
 	if (dt instanceof Date) {
 		return Temporal.Instant.from(dt.toISOString());
 	}

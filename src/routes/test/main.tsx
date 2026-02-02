@@ -7,7 +7,7 @@ import { Separator } from "~/components/ui/separator";
 import { CurrentTaskProvider } from "~/context/current-task";
 import { ViewProvider } from "~/context/view";
 
-export const Route = createFileRoute("/test/resizable")({
+export const Route = createFileRoute("/test/main")({
 	component: RouteComponent,
 });
 

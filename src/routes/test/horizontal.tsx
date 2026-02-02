@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/solid-router";
 import { HorizontalControlled } from "src/components/panes/horizontal-controlled";
 import { ViewProvider } from "~/context/view";
+import { CurrentTaskProvider } from "~/context/current-task";
 
 export const Route = createFileRoute("/test/horizontal")({
 	component: RouteComponent,
@@ -9,7 +10,9 @@ export const Route = createFileRoute("/test/horizontal")({
 function RouteComponent() {
 	return (
 		<ViewProvider>
-			<HorizontalControlled />
+			<CurrentTaskProvider>
+				<HorizontalControlled />
+			</CurrentTaskProvider>
 		</ViewProvider>
 	);
 }

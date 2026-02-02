@@ -28,7 +28,7 @@ export const Route = createRootRoute({
 					<NavLink to="/test/horizontal">Horizontal</NavLink>
 					<NavLink to="/test/vertical">Vertical</NavLink>
 					<NavLink to="/test/task-data-table">Data Table</NavLink>
-					<NavLink to="/test/resizable">Resizable</NavLink>
+					<NavLink to="/test/main">Main</NavLink>
 					<NavLink to="/test/dnd">Drag and Drop</NavLink>
 				</div>
 			</nav>

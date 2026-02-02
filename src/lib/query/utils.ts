@@ -15,23 +15,23 @@ export function tableQueries<
 	TableName extends keyof DatabaseWithoutInternals[DBSchema]["Tables"],
 	Schema extends StandardSchema<unknown>,
 	__SelectRow extends
-	DatabaseWithoutInternals[DBSchema]["Tables"][TableName] extends {
-		Row: infer I;
-	}
-	? I
-	: never,
+		DatabaseWithoutInternals[DBSchema]["Tables"][TableName] extends {
+			Row: infer I;
+		}
+			? I
+			: never,
 	__InsertRow extends
-	DatabaseWithoutInternals[DBSchema]["Tables"][TableName] extends {
-		Insert: infer I;
-	}
-	? I
-	: never,
+		DatabaseWithoutInternals[DBSchema]["Tables"][TableName] extends {
+			Insert: infer I;
+		}
+			? I
+			: never,
 	__UpdateRow extends
-	DatabaseWithoutInternals[DBSchema]["Tables"][TableName] extends {
-		Update: infer I;
-	}
-	? I
-	: never,
+		DatabaseWithoutInternals[DBSchema]["Tables"][TableName] extends {
+			Update: infer I;
+		}
+			? I
+			: never,
 >(schema: DBSchema, table: TableName, validator: Schema) {
 	// must validate server data manually since tanstack db doesn't do it
 	// automatically
@@ -47,7 +47,7 @@ export function tableQueries<
 				if (res.issues) {
 					throw new Error(
 						`Validation errors:
-${res.issues.map((i) => i.message).join(", ")}`,
+			 ${res.issues.map((i) => i.message).join(", ")}`,
 					);
 				}
 				return res.value;

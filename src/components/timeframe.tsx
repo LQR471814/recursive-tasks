@@ -5,7 +5,6 @@ import {
 	gte,
 	lt,
 	not,
-	useLiveQuery,
 } from "@tanstack/solid-db";
 import { createDroppable } from "@thisbeyond/solid-dnd";
 import {
@@ -19,7 +18,6 @@ import {
 	Switch,
 	useContext,
 } from "solid-js";
-import { TaskChipContext } from "src/context/task-chip";
 import { ViewContext } from "src/context/view";
 import { evalStats } from "src/workers/stats-worker.client";
 import { CurrentTaskContext } from "~/context/current-task";
@@ -94,9 +92,8 @@ export function Timeframe(props: {
 }) {
 	// dnd
 
-	const namespace = useContext(TaskChipContext);
 	const droppable = createDroppable(
-		`${namespace?.namespace ?? "null_namespace"} ${props.timescale.name} ${props.time.toString()}`,
+		`${props.timescale.name} ${props.time.toString()}`,
 		{
 			time: () => props.time,
 			timescale: () => props.timescale,
@@ -117,27 +114,38 @@ export function Timeframe(props: {
 		// for some reason, this isn't rerun unless the dependencies are
 		// explicitly stated here (do not compute these values from within the
 		// query's where callback)
-		const tfstart = new Date(instance().start.epochMilliseconds);
-		const tfend = new Date(instance().end.epochMilliseconds);
+		const tfstart = instance().start.epochMilliseconds;
+		const tfend = instance().end.epochMilliseconds;
 		return q
 			.from({ task: tasksCollection })
-			.where(({ task }) => not(eq(task.timescale, "all_time")))
 			.where(({ task }) =>
 				and(
+					not(eq(task.timescale, "all_time")),
 					gte(task.timeframe_start, tfstart),
 					lt(task.timeframe_start, tfend),
 				),
 			);
 	});
-	const tasks = useLiveQuery((q) =>
+	const shownTasksCollection = createLiveQueryCollection((q) =>
 		q
 			.from({ task: tasksInTimeframe })
 			.where(({ task }) => eq(task.timescale, timescaleType())),
 	);
+	// not extremely efficient, but beats the correctness issues with
+	// useLiveQuery for now
+	const [tasks, setTasks] = createSignal(
+		Array.from(shownTasksCollection.values()),
+	);
+	createEffect(() => {
+		const { unsubscribe } = shownTasksCollection.subscribeChanges(() => {
+			setTasks(Array.from(shownTasksCollection.values()));
+		});
+		return unsubscribe;
+	});
 	// other tasks include:
 	// - tasks which also occur within the timeframe but not the same timescale
 	// - tasks which are not children of the tasks in `tasks()`
-	const otherTasks = useLiveQuery((q) => {
+	const otherTasksCollection = createLiveQueryCollection((q) => {
 		// explicitly list dependency here, otherwise the live query doesn't update
 		tasks();
 		return q
@@ -159,6 +167,15 @@ export function Timeframe(props: {
 				}
 				return true;
 			});
+	});
+	const [otherTasks, setOtherTasks] = createSignal(
+		Array.from(otherTasksCollection.values()),
+	);
+	createEffect(() => {
+		const { unsubscribe } = otherTasksCollection.subscribeChanges(() => {
+			setOtherTasks(Array.from(otherTasksCollection.values()));
+		});
+		return unsubscribe;
 	});
 	const currentTaskCtx = useContext(CurrentTaskContext);
 

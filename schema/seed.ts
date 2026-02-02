@@ -20,7 +20,7 @@ async function main() {
 				parent_id: ROOT_ID,
 				assigned_to: null,
 				// the epoch
-				timeframe_start: new Date(0),
+				timeframe_start: 0,
 				timescale: "all_time",
 				optimistic: 100,
 				expected: 100,

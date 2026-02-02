@@ -1,9 +1,9 @@
 import {
 	type AnyPgColumn,
+	bigint,
 	pgEnum,
 	pgTable,
 	real,
-	timestamp,
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
@@ -31,7 +31,10 @@ export const taskTable = pgTable("task", {
 	comments: varchar().notNull(),
 
 	timescale: timescale_type().notNull(),
-	timeframe_start: timestamp().notNull(),
+	// we don't use timestamp because storing a unix date is much simpler and
+	// easier to deal with (since supabase client will turn the timestamp into
+	// a string anyway, which is not easy to compare)
+	timeframe_start: bigint({ mode: "number" }).notNull(),
 
 	assigned_to: uuid().references(() => executorTable.id),
 	parent_id: uuid()
@@ -57,6 +60,6 @@ export const executorOccupied = pgTable("executor_occupied", {
 	executor_id: uuid()
 		.notNull()
 		.references(() => executorTable.id),
-	start: timestamp().notNull(),
-	end: timestamp().notNull(),
+	start: bigint({ mode: "number" }).notNull(),
+	end: bigint({ mode: "number" }).notNull(),
 });
