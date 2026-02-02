@@ -7,6 +7,8 @@ export const tasksCollection = tableQueryCollection(
 	(i) => i.id,
 	publicTaskRowSchema,
 );
+tasksCollection.createIndex((row) => row.parent_id);
+
 export const executorsCollection = tableQueryCollection(
 	executors,
 	(i) => i.id,

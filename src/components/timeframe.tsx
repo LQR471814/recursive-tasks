@@ -17,21 +17,17 @@ import {
 	Show,
 	Switch,
 	useContext,
+	onCleanup,
 } from "solid-js";
 import { ViewContext } from "src/context/view";
 import { evalStats } from "src/workers/stats-worker.client";
 import { CurrentTaskContext, type DroppableData } from "~/context/current-task";
 import { tasksCollection } from "~/lib/db";
-import {
-	hierarchyTypes,
-	type Timescale,
-	timescaleTypeOf,
-} from "~/lib/timescales";
+import { type Timescale, timescaleTypeOf } from "~/lib/timescales";
 import { cn } from "~/lib/utils";
 import { TaskChip } from "./task";
 import { Button } from "./ui/button";
-
-// TODO: make it so that task estimates rerender when their children change!
+import { TaskNode, taskTree } from "src/lib/db/task-tree";
 
 const cachedPercentiles = new Map<string, number | Promise<number>>();
 
@@ -89,6 +85,19 @@ function usePercentileDuration(
 	return state;
 }
 
+/**
+ * for a given timeframe, want to find the following data:
+ *
+ * - whole tree of tasks under this timeframe
+ * - from there, the first level of tasks can be derived
+ *
+ * want to listen to every task in the tree
+ */
+
+// biome-ignore lint/style/noNonNullAssertion: will throw on undefined
+const idx = tasksCollection.indexes.get(1)!;
+if (!idx) throw new Error("tasksCollection doesn't have a 1st index");
+
 export function Timeframe(props: {
 	class?: string;
 	timescale: Timescale;
@@ -100,9 +109,6 @@ export function Timeframe(props: {
 
 	const instance = createMemo(() => props.timescale.instance(props.time));
 	const timescaleType = createMemo(() => timescaleTypeOf(props.timescale));
-	const hierarchyLevel = createMemo(
-		() => hierarchyTypes.length - hierarchyTypes.indexOf(timescaleType()),
-	);
 	const timeframeDuration = createMemo(() =>
 		instance().end.since(instance().start),
 	);
@@ -135,63 +141,70 @@ export function Timeframe(props: {
 				),
 			);
 	});
+
+	// not extremely efficient, but beats the correctness issues with
+	// useLiveQuery for now
 	const shownTasksCollection = createLiveQueryCollection((q) =>
 		q
 			.from({ task: tasksInTimeframe })
 			.where(({ task }) => eq(task.timescale, timescaleType())),
 	);
-	// not extremely efficient, but beats the correctness issues with
-	// useLiveQuery for now
-	const [tasks, setTasks] = createSignal(
-		Array.from(shownTasksCollection.values()),
-	);
-	createEffect(() => {
-		const { unsubscribe } = shownTasksCollection.subscribeChanges(() => {
-			setTasks(Array.from(shownTasksCollection.values()));
+
+	function getTasks() {
+		return Array.from(shownTasksCollection.values());
+	}
+	function getSubtreeIds(shownTasks: { id: string }[]) {
+		const subtreeIds = new Set<string>();
+		const getIds = ({ node, children }: TaskNode) => {
+			if (node) {
+				subtreeIds.add(node.id);
+			}
+			for (const c of children) {
+				getIds(c);
+			}
+		};
+		for (const { id } of shownTasks) {
+			const node = taskTree.lookup(id)();
+			getIds(node);
+		}
+		return subtreeIds;
+	}
+	const [tasks, setTasks] = createSignal(getTasks());
+	const [subtreeIds, setSubtreeIds] = createSignal(getSubtreeIds(tasks()));
+	let i = 0;
+	const { unsubscribe: unsubShownTasks } =
+		shownTasksCollection.subscribeChanges(() => {
+			i++;
+			if (i > 300) {
+				console.log("stopped!");
+				return;
+			}
+			const foundTasks = getTasks();
+			setTasks(foundTasks);
+			setSubtreeIds(getSubtreeIds(foundTasks));
 		});
-		return unsubscribe;
-	});
+	onCleanup(unsubShownTasks);
+
 	// other tasks include:
 	// - tasks which also occur within the timeframe but not the same timescale
 	// - tasks which are not children of the tasks in `tasks()`
 	const otherTasksCollection = createLiveQueryCollection((q) => {
-		// explicitly list dependency here, otherwise the live query doesn't update
+		// explicitly list implicit dependency here
 		tasks();
 		return q
 			.from({ task: tasksInTimeframe })
-			.where(({ task }) => not(eq(task.timescale, timescaleType())))
-			.fn.where(({ task }) => {
-				const level =
-					hierarchyTypes.length - hierarchyTypes.indexOf(task.timescale);
-				if (level > hierarchyLevel()) {
-					return false;
-				}
-				let id = task.id;
-				let parent = task.parent_id;
-				while (id !== parent) {
-					if (tasks().findIndex((e) => e.id === parent) >= 0) {
-						return false;
-					}
-					const parentTask = tasksCollection.get(parent);
-					if (!parentTask) {
-						throw new Error(`could not find parent task: ${parent}`);
-					}
-					id = parentTask.id;
-					parent = parentTask.parent_id;
-				}
-				return true;
-			});
+			.fn.where(({ task }) => !subtreeIds().has(task.id));
 	});
-	const [otherTasks, setOtherTasks] = createSignal(
-		Array.from(otherTasksCollection.values()),
-	);
-	createEffect(() => {
-		const { unsubscribe } = otherTasksCollection.subscribeChanges(() => {
-			setOtherTasks(Array.from(otherTasksCollection.values()));
+
+	function getOtherTasks() {
+		return Array.from(otherTasksCollection.values());
+	}
+	const [otherTasks, setOtherTasks] = createSignal(getOtherTasks());
+	const { unsubscribe: unsubOtherTasks } =
+		otherTasksCollection.subscribeChanges(() => {
+			setOtherTasks(getOtherTasks());
 		});
-		return unsubscribe;
-	});
-	const currentTaskCtx = useContext(CurrentTaskContext);
+	onCleanup(unsubOtherTasks);
 
 	// percentile computation
 
@@ -214,6 +227,8 @@ export function Timeframe(props: {
 			totalHours: timeframeDuration().total({ unit: "hours" }),
 		} satisfies DurationStats;
 	});
+
+	const currentTaskCtx = useContext(CurrentTaskContext);
 
 	return (
 		<Display

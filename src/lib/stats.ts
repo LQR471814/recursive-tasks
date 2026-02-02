@@ -17,9 +17,7 @@ function pertGenerator(params: PERTParams) {
 		params.optimistic === params.expected &&
 		params.expected === params.pessimistic
 	) {
-		return () => {
-			return params.optimistic;
-		};
+		return () => params.optimistic;
 	}
 	if (params.optimistic === params.expected) {
 		// leave 0.1% of clearance between optimistic and expected
