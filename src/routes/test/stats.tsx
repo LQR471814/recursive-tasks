@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/solid-router";
+import { debug } from "src/components/debug";
 
 export const Route = createFileRoute("/test/stats")({
-	component: RouteComponent,
+	component: debug(RouteComponent),
 });
 
 function RouteComponent() {

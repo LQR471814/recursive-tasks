@@ -8,6 +8,7 @@ import {
 import { createFileRoute } from "@tanstack/solid-router";
 import type { ColumnDef } from "@tanstack/solid-table";
 import { createEffect, Show } from "solid-js";
+import { debug } from "src/components/debug";
 import { DataTable } from "~/components/ui/data-table";
 import { executorsCollection, tasksCollection } from "~/lib/collections/tables";
 
@@ -54,7 +55,7 @@ const columns: ColumnDef<JoinedTask>[] = [
 ];
 
 export const Route = createFileRoute("/test/task-data-table")({
-	component: RouteComponent,
+	component: debug(RouteComponent),
 });
 
 function RouteComponent() {

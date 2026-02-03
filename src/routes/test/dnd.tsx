@@ -8,9 +8,10 @@ import {
 	type Id,
 } from "@thisbeyond/solid-dnd";
 import { createSignal, type ParentComponent, Show } from "solid-js";
+import { debug } from "src/components/debug";
 
 export const Route = createFileRoute("/test/dnd")({
-	component: RouteComponent,
+	component: debug(RouteComponent),
 });
 
 function RouteComponent() {
