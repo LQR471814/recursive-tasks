@@ -147,6 +147,7 @@ function currentTaskValue() {
 			const val = tasksCollection.get(id);
 			if (!val) throw new Error(`unknown task: ${id}`);
 			// not using update because that causes state issues!
+			// TODO: pretty sure this an issue with tanstack db, will wait for a fix
 			lastMove = (async () => {
 				await lastMove;
 				const result = tasksCollection.delete(val.id);
