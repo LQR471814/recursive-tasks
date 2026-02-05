@@ -66,7 +66,7 @@ export function ViewController() {
 					maxValue={100}
 					value={[ctx.state.percentile]}
 					class="m-auto w-[200px]"
-					onChangeEnd={(e) => {
+					onChange={(e) => {
 						ctx.setPercentile(e[0]);
 					}}
 				>
