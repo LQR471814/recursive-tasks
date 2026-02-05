@@ -1,16 +1,13 @@
 import "temporal-polyfill/global";
 
+import sqlite3 from "better-sqlite3";
 import { and, eq, gte, type InferInsertModel, lt } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/better-sqlite3";
 import { ROOT_ID } from "src/lib/constants";
 import { childInstancesOf, day, year } from "../src/lib/timescales";
 import { taskTable } from "./schema";
 
-const sql = postgres(
-	process.env.DB_URL ??
-		"postgresql://postgres:postgres@127.0.0.1:54322/postgres",
-);
+const sql = sqlite3(process.env.DB_URL ?? "./traildepot/data/main.db");
 const db = drizzle({ client: sql });
 
 async function main() {

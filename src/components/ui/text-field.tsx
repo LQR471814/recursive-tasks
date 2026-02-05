@@ -1,11 +1,11 @@
 import type { PolymorphicProps } from "@kobalte/core";
 import * as TextFieldPrimitive from "@kobalte/core/text-field";
+import type { AnyFieldApi, FieldApi } from "@tanstack/solid-form";
 import { cva } from "class-variance-authority";
 import type { ValidComponent } from "solid-js";
-import { Show, mergeProps, splitProps } from "solid-js";
-import { FieldInfo } from "../field-info";
-import type { AnyFieldApi, FieldApi } from "@tanstack/solid-form";
+import { mergeProps, Show, splitProps } from "solid-js";
 import { cn } from "~/lib/utils";
+import { FieldInfo } from "../field-info";
 
 type TextFieldRootProps<T extends ValidComponent = "div"> =
 	TextFieldPrimitive.TextFieldRootProps<T> & {

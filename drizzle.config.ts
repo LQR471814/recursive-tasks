@@ -2,11 +2,10 @@
 import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
-	dialect: "postgresql",
+	dialect: "sqlite",
 	schema: "./schema/schema.ts",
+	tablesFilter: ["!_*"],
 	dbCredentials: {
-		url:
-			process.env.DB_URL ??
-			"postgresql://postgres:postgres@127.0.0.1:54322/postgres",
+		url: process.env.DB_URL ?? "./traildepot/data/main.db",
 	},
 });

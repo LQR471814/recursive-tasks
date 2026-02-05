@@ -20,6 +20,7 @@
       hours for children percentages.
     - [ ] Feature: Add a button to delete the task without also
       deleting all of its children.
+    - [ ] Feature: Multiple executors.
 - Semantics / Minor correctness:
     - [x] Bug: Make children percentage UI accept percentages
       instead of proportions.

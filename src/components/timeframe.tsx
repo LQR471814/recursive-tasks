@@ -1,3 +1,4 @@
+import { debounce } from "@tanstack/pacer";
 import { and, eq, gte, lt, not, useLiveQuery } from "@tanstack/solid-db";
 import { createDroppable } from "@thisbeyond/solid-dnd";
 import {
@@ -24,7 +25,6 @@ import {
 import { cn } from "~/lib/utils";
 import { TaskChip } from "./task";
 import { Button } from "./ui/button";
-import { debounce } from "@tanstack/pacer";
 
 const cachedPercentiles = new Map<string, number | Promise<number>>();
 

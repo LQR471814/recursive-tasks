@@ -1,45 +1,42 @@
 import {
-	type AnyPgColumn,
-	bigint,
-	pgEnum,
-	pgTable,
+	type AnySQLiteColumn,
+	integer,
 	real,
-	uuid,
-	varchar,
-} from "drizzle-orm/pg-core";
+	sqliteTable,
+	text,
+} from "drizzle-orm/sqlite-core";
 
-export const timescale_type = pgEnum("timescale_type", [
-	"all_time",
-	"ten_year",
-	"five_year",
-	"year",
-	"quarter",
-	"month",
-	"week",
-	"day",
-	"daypart",
-]);
+export const timescale_type = text({
+	enum: [
+		"all_time",
+		"ten_year",
+		"five_year",
+		"year",
+		"quarter",
+		"month",
+		"week",
+		"day",
+		"daypart",
+	],
+});
 
-export const implementation_type = pgEnum("implementation_type", [
-	"children",
-	"hours",
-]);
+export const implementation_type = text({ enum: ["children", "hours"] });
 
-export const taskTable = pgTable("task", {
-	id: uuid().primaryKey(),
-	name: varchar({ length: 256 }).notNull(),
-	comments: varchar().notNull(),
+export const taskTable = sqliteTable("task", {
+	id: text().primaryKey(),
+	name: text({ length: 256 }).notNull(),
+	comments: text().notNull(),
 
-	timescale: timescale_type().notNull(),
+	timescale: timescale_type.notNull(),
 	// we don't use timestamp because storing a unix date is much simpler and
 	// easier to deal with (since supabase client will turn the timestamp into
 	// a string anyway, which is not easy to compare)
-	timeframe_start: bigint({ mode: "number" }).notNull(),
+	timeframe_start: integer({ mode: "number" }).notNull(),
 
-	assigned_to: uuid().references(() => executorTable.id),
-	parent_id: uuid()
+	assigned_to: text().references(() => executorTable.id),
+	parent_id: text()
 		.notNull()
-		.references((): AnyPgColumn => taskTable.id, {
+		.references((): AnySQLiteColumn => taskTable.id, {
 			onUpdate: "cascade",
 			onDelete: "cascade",
 		}),
@@ -47,19 +44,19 @@ export const taskTable = pgTable("task", {
 	optimistic: real().notNull(),
 	expected: real().notNull(),
 	pessimistic: real().notNull(),
-	implementation: implementation_type().notNull(),
+	implementation: implementation_type.notNull(),
 });
 
-export const executorTable = pgTable("executor", {
-	id: uuid().primaryKey(),
-	name: varchar().notNull(),
-	comments: varchar().notNull(),
+export const executorTable = sqliteTable("executor", {
+	id: text().primaryKey(),
+	name: text().notNull(),
+	comments: text().notNull(),
 });
 
-export const executorOccupied = pgTable("executor_occupied", {
-	executor_id: uuid()
+export const executorOccupied = sqliteTable("executor_occupied", {
+	executor_id: text()
 		.notNull()
 		.references(() => executorTable.id),
-	start: bigint({ mode: "number" }).notNull(),
-	end: bigint({ mode: "number" }).notNull(),
+	start: integer({ mode: "timestamp_ms" }).notNull(),
+	end: integer({ mode: "timestamp_ms" }).notNull(),
 });

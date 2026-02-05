@@ -1,11 +1,11 @@
 import "temporal-polyfill/global";
 
-import { drizzle } from "drizzle-orm/postgres-js";
-import { sql, eq } from "drizzle-orm";
-import postgres from "postgres";
 import { readFile } from "node:fs/promises";
-import { taskTable } from "./schema";
+import { eq, sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import type { Tables } from "src/lib/supabase/types.gen";
+import { taskTable } from "./schema";
 
 const client = postgres(
 	process.env.DB_URL ??

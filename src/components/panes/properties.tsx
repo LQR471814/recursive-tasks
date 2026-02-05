@@ -2,8 +2,8 @@
 
 import { useLiveQuery } from "@tanstack/solid-db";
 import { createMemo, Match, Show, Switch, useContext } from "solid-js";
-import { ROOT_ID } from "src/lib/constants";
 import { tasksCollection } from "src/lib/collections";
+import { ROOT_ID } from "src/lib/constants";
 import { type Timescale, timescaleFromType } from "src/lib/timescales";
 import { asInstant, cn, currentTz } from "src/lib/utils";
 import {
