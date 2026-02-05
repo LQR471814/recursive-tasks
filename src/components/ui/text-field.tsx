@@ -2,8 +2,9 @@ import type { PolymorphicProps } from "@kobalte/core";
 import * as TextFieldPrimitive from "@kobalte/core/text-field";
 import { cva } from "class-variance-authority";
 import type { ValidComponent } from "solid-js";
-import { mergeProps, splitProps } from "solid-js";
-
+import { Show, mergeProps, splitProps } from "solid-js";
+import { FieldInfo } from "../field-info";
+import type { AnyFieldApi, FieldApi } from "@tanstack/solid-form";
 import { cn } from "~/lib/utils";
 
 type TextFieldRootProps<T extends ValidComponent = "div"> =
@@ -163,6 +164,117 @@ const TextFieldErrorMessage = <T extends ValidComponent = "div">(
 	);
 };
 
+function FormMultilineText(props: {
+	field: FieldApi<
+		any,
+		any,
+		string,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any
+	>;
+	label?: string;
+	placeholder?: string;
+	class?: string;
+}) {
+	return (
+		<TextField>
+			<Show when={props.label}>
+				<TextFieldLabel for={props.field.name}>{props.label}</TextFieldLabel>
+			</Show>
+			<TextFieldTextArea
+				id={props.field.name}
+				name={props.field.name}
+				placeholder={props.placeholder}
+				onBlur={props.field.handleBlur}
+				onInput={(e) => props.field.handleChange(e.currentTarget.value)}
+				value={props.field.state.value}
+				class={props.class}
+			/>
+			<FieldInfo field={props.field} />
+		</TextField>
+	);
+}
+
+function FormTextField<
+	T extends AnyFieldApi,
+	// typescript madness
+	__Return extends T extends FieldApi<
+		any,
+		any,
+		infer U,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any,
+		any
+	>
+		? U
+		: never,
+>(props: {
+	field: T;
+	transform: (text: string) => __Return;
+	type: TextFieldInputProps<"input">["type"];
+	label?: string;
+	placeholder?: string;
+	class?: string;
+}) {
+	return (
+		<TextField>
+			<Show when={props.label}>
+				<TextFieldLabel for={props.field.name}>{props.label}</TextFieldLabel>
+			</Show>
+			<TextFieldInput
+				class={props.class}
+				id={props.field.name}
+				type={props.type}
+				name={props.field.name}
+				placeholder={props.placeholder}
+				onBlur={props.field.handleBlur}
+				onInput={(e) =>
+					props.field.handleChange(props.transform(e.currentTarget.value))
+				}
+				value={
+					Number.isNaN(props.field.state.value) ? "" : props.field.state.value
+				}
+			/>
+			<FieldInfo field={props.field} />
+		</TextField>
+	);
+}
+
 export {
 	TextField,
 	TextFieldInput,
@@ -170,4 +282,6 @@ export {
 	TextFieldLabel,
 	TextFieldDescription,
 	TextFieldErrorMessage,
+	FormTextField,
+	FormMultilineText,
 };

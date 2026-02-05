@@ -46,6 +46,7 @@
 		"@kobalte/core": "^0.13.11",
 		"@solid-devtools/debugger": "^0.28.1",
 		"@supabase/supabase-js": "^2.91.0",
+		"@tanstack/pacer": "^0.18.0",
 		"@tanstack/query-db-collection": "^1.0.20",
 		"@tanstack/solid-db": "^0.2.3",
 		"@tanstack/solid-form": "^1.28.0",

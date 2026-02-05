@@ -4,6 +4,13 @@ import * as Select from "~/components/ui/select";
 import { useCurrentTime, ViewContext } from "~/context/view";
 import * as timescales from "~/lib/timescales";
 import { TimeDisplay } from "../time-display";
+import { TextField, TextFieldInput } from "~/components/ui/text-field";
+import {
+	Slider,
+	SliderFill,
+	SliderThumb,
+	SliderTrack,
+} from "~/components/ui/slider";
 
 const options = timescales.hierarchy
 	.slice(0, timescales.hierarchy.length - 1)
@@ -15,6 +22,7 @@ export function ViewController() {
 	if (!ctx) {
 		return <p>ViewContext.Provider is missing</p>;
 	}
+
 	return (
 		<div class="flex flex-wrap gap-1 p-1">
 			<Select.Select
@@ -41,6 +49,33 @@ export function ViewController() {
 				</Select.SelectTrigger>
 				<Select.SelectContent />
 			</Select.Select>
+			<TextField>
+				<TextFieldInput
+					class="max-w-[5rem]"
+					type="number"
+					value={ctx.state.percentile}
+					onChange={(e) => {
+						const value = parseFloat(e.currentTarget.value);
+						ctx.setPercentile(value);
+					}}
+				/>
+			</TextField>
+			<div class="flex px-3">
+				<Slider
+					minValue={0}
+					maxValue={100}
+					value={[ctx.state.percentile]}
+					class="m-auto w-[200px]"
+					onChange={(e) => {
+						ctx.setPercentile(e[0]);
+					}}
+				>
+					<SliderTrack>
+						<SliderFill />
+						<SliderThumb />
+					</SliderTrack>
+				</Slider>
+			</div>
 			<div class="flex gap-1">
 				<Button
 					class="text-primary/20"

@@ -78,11 +78,19 @@ function getTaskBFS(result: Task[], ids: string[]) {
 			throw new Error(`could not find task: ${id}`);
 		}
 		const resultTask: Task = {
-			pert: {
-				pessimistic: task.pessimistic,
-				expected: task.expected,
-				optimistic: task.optimistic,
-			},
+			pert:
+				task.implementation === "hours"
+					? {
+							pessimistic: task.pessimistic,
+							expected: task.expected,
+							optimistic: task.optimistic,
+						}
+					: // convert percentage to proportion
+						{
+							pessimistic: task.pessimistic / 100,
+							expected: task.expected / 100,
+							optimistic: task.optimistic / 100,
+						},
 			children: [],
 		};
 		for (const [, row] of tasksCollection.entries()) {

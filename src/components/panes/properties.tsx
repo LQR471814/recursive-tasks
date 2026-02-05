@@ -1,7 +1,6 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: lots of typescript shenanigans happening here
 
 import { useLiveQuery } from "@tanstack/solid-db";
-import type { AnyFieldApi, FieldApi } from "@tanstack/solid-form";
 import { createMemo, Match, Show, Switch, useContext } from "solid-js";
 import { ROOT_ID } from "src/lib/constants";
 import { tasksCollection } from "src/lib/collections";
@@ -11,126 +10,13 @@ import {
 	CurrentTaskContext,
 	type CurrentTaskValue,
 } from "~/context/current-task";
-import { FieldInfo } from "../field-info";
 import { TimeDisplay } from "../time-display";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Search } from "../ui/search";
 import { Separator } from "../ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import {
-	TextField,
-	TextFieldInput,
-	type TextFieldInputProps,
-	TextFieldLabel,
-	TextFieldTextArea,
-} from "../ui/text-field";
-
-function FormMultilineText(props: {
-	field: FieldApi<
-		any,
-		any,
-		string,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any
-	>;
-	label: string;
-	placeholder?: string;
-	class?: string;
-}) {
-	return (
-		<TextField>
-			<TextFieldLabel for={props.field.name}>{props.label}</TextFieldLabel>
-			<TextFieldTextArea
-				id={props.field.name}
-				name={props.field.name}
-				placeholder={props.placeholder}
-				onBlur={props.field.handleBlur}
-				onInput={(e) => props.field.handleChange(e.currentTarget.value)}
-				class={props.class}
-			/>
-			<FieldInfo field={props.field} />
-		</TextField>
-	);
-}
-
-function FormTextField<
-	T extends AnyFieldApi,
-	// typescript madness
-	__Return extends T extends FieldApi<
-		any,
-		any,
-		infer U,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any,
-		any
-	>
-		? U
-		: never,
->(props: {
-	field: T;
-	transform: (text: string) => __Return;
-	type: TextFieldInputProps<"input">["type"];
-	label: string;
-	placeholder?: string;
-	class?: string;
-}) {
-	return (
-		<TextField>
-			<TextFieldLabel for={props.field.name}>{props.label}</TextFieldLabel>
-			<TextFieldInput
-				class={props.class}
-				id={props.field.name}
-				type={props.type}
-				name={props.field.name}
-				placeholder={props.placeholder}
-				onBlur={props.field.handleBlur}
-				onInput={(e) =>
-					props.field.handleChange(props.transform(e.currentTarget.value))
-				}
-				value={
-					Number.isNaN(props.field.state.value) ? "" : props.field.state.value
-				}
-			/>
-			<FieldInfo field={props.field} />
-		</TextField>
-	);
-}
+import { FormMultilineText, FormTextField } from "../ui/text-field";
 
 function FormFields(props: {
 	form: CurrentTaskValue["forms"][keyof CurrentTaskValue["forms"]];
@@ -248,7 +134,7 @@ function FormFields(props: {
 										<FormTextField
 											field={field()}
 											transform={(v) => parseFloat(v)}
-											label="Optimistic %"
+											label="Pessimistic %"
 											type="text"
 											placeholder="Percentage"
 										/>
@@ -280,7 +166,7 @@ function FormFields(props: {
 										<FormTextField
 											field={field()}
 											transform={(v) => parseFloat(v)}
-											label="Pessimistic %"
+											label="Optimistic %"
 											type="text"
 											placeholder="Percentage"
 										/>
