@@ -51,9 +51,11 @@ function usePercentileDuration(
 	>(null);
 
 	createEffect(() => {
+		const p = percentile();
+
 		let hash = "";
 		for (const t of tasks()) {
-			hash += `${t.optimistic}:${t.expected}:${t.pessimistic},`;
+			hash += `${p}|${t.optimistic}:${t.expected}:${t.pessimistic},`;
 		}
 		for (const t of dependencies()) {
 			hash += `|${t.optimistic}:${t.expected}:${t.pessimistic},`;
@@ -73,7 +75,7 @@ function usePercentileDuration(
 						tasks().map((t) => t.id),
 						{
 							type: "percentile",
-							percentile: percentile(),
+							percentile: p,
 						},
 					);
 
@@ -178,9 +180,9 @@ export function Timeframe(props: {
 	// percentile computation
 
 	const viewCtx = useContext(ViewContext);
-	const percentile = viewCtx?.state.percentile ?? 95;
+	const percentile = createMemo(() => viewCtx?.state.percentile ?? 95);
 	const totalTaskDuration = usePercentileDuration(
-		() => percentile,
+		percentile,
 		() => taskAnalysis().indep,
 		() => taskAnalysis().dependent,
 	);
