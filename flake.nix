@@ -31,7 +31,7 @@
           buildInputs = [ trailbase ];
           shellHook = ''
             echo "Devshell activated."
-            trail run
+            trail run --dev
           '';
         };
     };
