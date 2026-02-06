@@ -42,15 +42,6 @@ async function main() {
 	]);
 
 	// days
-	await db
-		.delete(taskTable)
-		.where(
-			and(
-				eq(taskTable.name, "Sleep"),
-				gte(taskTable.timeframe_start, thisYear.start.epochMilliseconds),
-				lt(taskTable.timeframe_start, thisYear.start.epochMilliseconds),
-			),
-		);
 	const values: InferInsertModel<typeof taskTable>[] = [];
 	for (const child of childInstancesOf(year, day, now)) {
 		values.push({
