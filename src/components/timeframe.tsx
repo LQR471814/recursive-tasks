@@ -52,12 +52,26 @@ function usePercentileDuration(
 	>(null);
 
 	const calculate = debounce(
-		(p: number) => {
+		(
+			tasks: {
+				id: bigint;
+				optimistic: number;
+				expected: number;
+				pessimistic: number;
+			}[],
+			dependencies: {
+				id: bigint;
+				optimistic: number;
+				expected: number;
+				pessimistic: number;
+			}[],
+			p: number,
+		) => {
 			let hash = "";
-			for (const t of tasks()) {
+			for (const t of tasks) {
 				hash += `${p}|${t.optimistic}:${t.expected}:${t.pessimistic},`;
 			}
-			for (const t of dependencies()) {
+			for (const t of dependencies) {
 				hash += `|${t.optimistic}:${t.expected}:${t.pessimistic},`;
 			}
 			const cached = cachedPercentiles.get(hash);
@@ -72,7 +86,7 @@ function usePercentileDuration(
 				cached instanceof Promise
 					? cached
 					: evalStats(
-						tasks().map((t) => t.id),
+						tasks.map((t) => t.id),
 						{
 							type: "percentile",
 							percentile: p,
@@ -95,8 +109,7 @@ function usePercentileDuration(
 	);
 
 	createEffect(() => {
-		const p = percentile();
-		calculate(p);
+		calculate(tasks(), dependencies(), percentile());
 	});
 
 	return state;
