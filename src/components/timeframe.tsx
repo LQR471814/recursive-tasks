@@ -33,7 +33,7 @@ function usePercentileDuration(
 	percentile: Accessor<number>,
 	tasks: Accessor<
 		{
-			id: bigint;
+			id: string;
 			optimistic: number;
 			expected: number;
 			pessimistic: number;
@@ -41,7 +41,7 @@ function usePercentileDuration(
 	>,
 	dependencies: Accessor<
 		{
-			id: bigint;
+			id: string;
 			optimistic: number;
 			expected: number;
 			pessimistic: number;
@@ -55,13 +55,13 @@ function usePercentileDuration(
 	const calculate = debounce(
 		(
 			tasks: {
-				id: bigint;
+				id: string;
 				optimistic: number;
 				expected: number;
 				pessimistic: number;
 			}[],
 			dependencies: {
-				id: bigint;
+				id: string;
 				optimistic: number;
 				expected: number;
 				pessimistic: number;
@@ -121,7 +121,7 @@ function getTaskAnalysis(
 	allTasks: (typeof task.schema.infer)[],
 ) {
 	// find all tasks with a parent_id not in the list
-	const ids = new Set<bigint>();
+	const ids = new Set<string>();
 	for (const t of allTasks) {
 		if (t.id === undefined) throw new Error("id is missing!");
 		ids.add(t.id);
@@ -151,8 +151,6 @@ export function Timeframe(props: {
 }) {
 	// timeframe calculations
 
-	const taskChipContext = useContext(TaskChipContext);
-
 	const instance = createMemo(() => props.timescale.instance(props.time));
 	const timescaleType = createMemo(() => timescaleTypeOf(props.timescale));
 	const timeframeDuration = createMemo(() =>
@@ -162,7 +160,7 @@ export function Timeframe(props: {
 	// dnd
 
 	const droppable = createDroppable(
-		`${taskChipContext?.namespace}:${props.timescale.name}:${props.time.toString()}`,
+		`${props.timescale.name}:${props.time.toString()}`,
 		{
 			timeframeStart: () => instance().start,
 			timescale: () => props.timescale,
@@ -240,7 +238,7 @@ export function Timeframe(props: {
 				id: t.id,
 				name: t.name,
 				onClick: () => {
-					currentTaskCtx?.selectTask(t.id);
+					// currentTaskCtx?.selectTask(t.id);
 				},
 			}))}
 			duration={duration()}
@@ -251,7 +249,7 @@ export function Timeframe(props: {
 }
 
 type TaskElementParams = {
-	id: bigint;
+	id: string;
 	name: string;
 	onClick(): void;
 };

@@ -1,7 +1,14 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: lots of typescript shenanigans happening here
 
 import { useLiveQuery } from "@tanstack/solid-db";
-import { createMemo, Match, Show, Switch, useContext } from "solid-js";
+import {
+	createEffect,
+	createMemo,
+	Match,
+	Show,
+	Switch,
+	useContext,
+} from "solid-js";
 import { tasksCollection } from "src/lib/collections";
 import { ROOT_ID } from "src/lib/constants";
 import {
@@ -25,6 +32,7 @@ import { FormMultilineText, FormTextField } from "../ui/text-field";
 function FormFields(props: {
 	form: CurrentTaskValue["forms"][keyof CurrentTaskValue["forms"]];
 }) {
+	const parentOptions = useLiveQuery((q) => q.from({ tasks: tasksCollection }));
 	const form = props.form;
 	return (
 		<>
@@ -197,33 +205,31 @@ function FormFields(props: {
 			<form.Field
 				name="parent_id"
 				children={(field) => {
-					const parentOptions = useLiveQuery((q) =>
-						q.from({ tasks: tasksCollection }),
-					);
-					const parent = createMemo(
-						// biome-ignore lint/style/noNonNullAssertion: this is guaranteed to exist
-						() => tasksCollection.get(field().state.value.toString())!,
+					const parent = createMemo(() =>
+						tasksCollection.get(field().state.value.toString()),
 					);
 					return (
 						<div class="max-w-[220px]">
-							<label class="text-sm font-medium" for={field().name}>
-								Parent
-							</label>
-							<Search
-								name={field().name}
-								options={parentOptions()}
-								selected={parent()}
-								idField="id"
-								labelField="name"
-								onChange={(newParent) => {
-									if (!newParent) {
-										// root id
-										field().handleChange(ROOT_ID);
-										return;
-									}
-									field().handleChange(newParent.id);
-								}}
-							/>
+							<Show when={!!parent()} fallback={<p>...</p>}>
+								<label class="text-sm font-medium" for={field().name}>
+									Parent ({parent()!.name})
+								</label>
+								<Search
+									name={field().name}
+									options={parentOptions()}
+									selected={parent()!}
+									idField="id"
+									labelField="name"
+									onChange={(newParent) => {
+										if (!newParent) {
+											// root id
+											field().handleChange(ROOT_ID);
+											return;
+										}
+										field().handleChange(newParent.id);
+									}}
+								/>
+							</Show>
 						</div>
 					);
 				}}

@@ -37,7 +37,7 @@ worker.onmessage = (e) => {
 	}
 };
 
-export function evalStats(taskIds: bigint[], action: Action) {
+export function evalStats(taskIds: string[], action: Action) {
 	const tasks: Task[] = [];
 	getTaskBFS(tasks, taskIds);
 
@@ -67,8 +67,8 @@ export function evalStats(taskIds: bigint[], action: Action) {
 	});
 }
 
-function getTaskBFS(result: Task[], ids: bigint[]) {
-	const queue: bigint[] = [...ids];
+function getTaskBFS(result: Task[], ids: string[]) {
+	const queue: string[] = [...ids];
 	while (true) {
 		const id = queue.pop();
 		if (id === undefined) {

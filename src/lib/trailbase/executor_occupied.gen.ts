@@ -1,2 +1,2 @@
 import { type } from "arktype"
-export const schema = type({"end":"number","executor_id":"number","id":"bigint","start":"number"})
+export const schema = type({"end":"number","executor_id":"string","id":"string","start":"number"})

@@ -1,4 +1,4 @@
-# definition found here: https://github.com/trailbaseio/trailbase/blob/main/crates/core/proto/config.proto
+# Auto-generated config.Config textproto
 email {}
 server {
   application_name: "TrailBase"
@@ -9,26 +9,22 @@ auth {
   refresh_token_ttl_sec: 2592000
 }
 jobs {}
-record_apis: [
-  {
-    name: "task"
-    table_name: "task"
-    enable_subscriptions: true
-    conflict_resolution: REPLACE
-    acl_world: [CREATE, READ, UPDATE, DELETE, SCHEMA]
-  },
-  {
-    name: "executor"
-    table_name: "executor"
-    enable_subscriptions: true
-    conflict_resolution: REPLACE
-    acl_world: [CREATE, READ, UPDATE, DELETE, SCHEMA]
-  },
-  {
-    name: "executor_occupied"
-    table_name: "executor_occupied"
-    enable_subscriptions: true
-    conflict_resolution: REPLACE
-    acl_world: [CREATE, READ, UPDATE, DELETE, SCHEMA]
-  }
-]
+record_apis: [{
+  name: "task"
+  table_name: "task"
+  conflict_resolution: REPLACE
+  acl_world: [CREATE, READ, UPDATE, DELETE, SCHEMA]
+  enable_subscriptions: true
+}, {
+  name: "executor"
+  table_name: "executor"
+  conflict_resolution: REPLACE
+  acl_world: [CREATE, READ, UPDATE, DELETE, SCHEMA]
+  enable_subscriptions: true
+}, {
+  name: "executor_occupied"
+  table_name: "executor_occupied"
+  conflict_resolution: REPLACE
+  acl_world: [CREATE, READ, UPDATE, DELETE, SCHEMA]
+  enable_subscriptions: true
+}]

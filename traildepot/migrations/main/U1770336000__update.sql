@@ -1,16 +1,16 @@
 -- init schema
 create table task (
-	id int not null primary key,
+	id blob primary key check(is_uuid_v7(id)),
 	name text not null,
 	comments text not null,
 
 	timescale int not null,
 	timeframe_start int not null,
 
-	assigned_to int references executor(id)
+	assigned_to blob references executor(id)
 		on update cascade
 		on delete set null,
-	parent_id int not null references task(id)
+	parent_id blob not null references task(id)
 		on update cascade
 		on delete cascade,
 
@@ -22,16 +22,16 @@ create table task (
 ) strict;
 
 create table executor (
-	id int not null primary key,
+	id blob primary key check(is_uuid_v7(id)),
 	name text not null,
 	comments text not null
 ) strict;
 
 create table executor_occupied (
-	executor_id int not null references executor(id)
+	executor_id blob not null references executor(id)
 		on update cascade
 		on delete cascade,
-	id int not null primary key,
+	id blob primary key check(is_uuid_v7(id)),
 	start int not null,
 	end int not null
 ) strict;

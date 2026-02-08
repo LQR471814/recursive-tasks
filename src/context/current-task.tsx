@@ -9,7 +9,7 @@ import {
 import { showToast } from "src/components/ui/toast";
 import { tasksCollection } from "src/lib/collections";
 import type { task } from "src/lib/trailbase";
-import { randomSnowflakeID } from "src/lib/utils";
+import { generateID } from "src/lib/utils";
 import { ROOT_ID } from "~/lib/constants";
 import {
 	ImplementationType,
@@ -23,14 +23,11 @@ function currentTaskValue() {
 	const [shown, setShown] = createSignal<"selected" | "new_child" | "none">(
 		"none",
 	);
-	const [selectedTaskId, setSelectedTaskId] = createSignal<
-		bigint | undefined
-	>();
 
 	function form(onsubmit: () => void) {
 		return createForm(() => ({
 			defaultValues: {
-				id: randomSnowflakeID(),
+				id: generateID(),
 				name: "",
 				comments: "",
 				implementation: ImplementationType.hours,
@@ -45,6 +42,7 @@ function currentTaskValue() {
 			onSubmit: onsubmit,
 		}));
 	}
+
 	const edit = form(() => {
 		tasksCollection.update(edit.state.values.id.toString(), (val) => {
 			Object.assign(val, edit.state.values);
@@ -66,14 +64,12 @@ function currentTaskValue() {
 
 	return {
 		shown,
-		selectedTaskId,
 		forms: { edit, creation },
-		selectTask(taskId: bigint) {
+		selectTask(taskId: string) {
 			const task = tasksCollection.get(taskId.toString());
 			if (!task) throw new Error("taskId is invalid");
 			batch(() => {
 				edit.reset(task);
-				setSelectedTaskId(taskId);
 				setShown("selected");
 			});
 		},
@@ -129,13 +125,13 @@ function currentTaskValue() {
 			setShown("none");
 		},
 		move(
-			id: bigint,
+			id: string,
 			newTimeframeStart: Temporal.ZonedDateTime,
 			newTimescale: TimescaleType,
 		) {
 			const val = tasksCollection.get(id.toString());
 			if (!val) throw new Error(`unknown task: ${id}`);
-			tasksCollection.update(val.id.toString(), (val) => {
+			tasksCollection.update(id.toString(), (val) => {
 				val.timeframe_start = newTimeframeStart.epochMilliseconds;
 				val.timescale = newTimescale;
 			});
@@ -148,7 +144,7 @@ export type CurrentTaskValue = ReturnType<typeof currentTaskValue>;
 export const CurrentTaskContext = createContext<CurrentTaskValue>();
 
 export type DragData = {
-	taskId: bigint;
+	taskId: string;
 };
 
 export type DroppableData = {
@@ -171,7 +167,7 @@ export const CurrentTaskProvider: ParentComponent = (props) => {
 					dropData.timeframeStart(),
 					timescaleTypeOf(dropData.timescale()),
 				);
-				if (value.selectedTaskId() === dragData.taskId) {
+				if (value.forms.edit.state.values.id === dragData.taskId) {
 					value.selectTask(dragData.taskId);
 				}
 			}}

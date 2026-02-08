@@ -12,10 +12,10 @@ insert into task (
 	pessimistic,
 	implementation
 ) values (
-	7425328450300310006, -- id
+	X'019c3e8bea8d71ea91a23176498e8e38', -- id
 	'Root', -- name
 	'The root task which all tasks originate from.', -- comments
-	7425328450300310006, -- parent_id
+	X'019c3e8bea8d71ea91a23176498e8e38', -- parent_id
 	null, -- assigned_to
 	0, -- timeframe_start
 	0, -- timescale

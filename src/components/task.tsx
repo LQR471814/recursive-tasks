@@ -39,7 +39,7 @@ function Display(props: {
 }
 
 export function TaskChip(props: {
-	id: bigint;
+	id: string;
 	name: string;
 	color: string;
 	onClick: () => void;
@@ -49,27 +49,16 @@ export function TaskChip(props: {
 	const dragId = createMemo(() =>
 		ctx?.namespace ? `${ctx.namespace}:${props.id}` : props.id.toString(),
 	);
-	try {
-		const draggable = createMemo(() =>
-			createDraggable(dragId(), { taskId: props.id } satisfies DragData),
-		);
-		return (
-			<Display
-				class={cn("draggable", props.class)}
-				name={props.name}
-				color={props.color}
-				onClick={props.onClick}
-				ref={draggable()}
-			/>
-		);
-	} catch {
-		return (
-			<Display
-				class={cn("draggable", props.class)}
-				name={props.name}
-				color={props.color}
-				onClick={props.onClick}
-			/>
-		);
-	}
+	const draggable = createMemo(() =>
+		createDraggable(dragId(), { taskId: props.id } satisfies DragData),
+	);
+	return (
+		<Display
+			class={cn("draggable", props.class)}
+			name={props.name}
+			color={props.color}
+			onClick={props.onClick}
+			ref={draggable()}
+		/>
+	);
 }

@@ -1,23 +1,23 @@
-import { type ClassValue, clsx } from "clsx";
-import { Generator } from "snowflake-generator";
 import {
-	createMemo,
+	BaseQueryBuilder,
+	type Context,
+	createLiveQueryCollection,
+	type GetResult,
+	type InitialQueryBuilder,
+	type QueryBuilder,
+} from "@tanstack/solid-db";
+import { type ClassValue, clsx } from "clsx";
+import {
+	type Accessor,
 	createEffect,
+	createMemo,
 	createRoot,
 	createSignal,
 	onCleanup,
-	type Accessor,
 } from "solid-js";
 import { createStore } from "solid-js/store";
 import { twMerge } from "tailwind-merge";
-import {
-	createLiveQueryCollection,
-	BaseQueryBuilder,
-	type Context,
-	type InitialQueryBuilder,
-	type QueryBuilder,
-	type GetResult,
-} from "@tanstack/solid-db";
+import { v7 as uuidv7 } from "uuid";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -66,9 +66,8 @@ export function asUTCDate(dt: string | Date) {
 	return new Date(`${dt}Z`);
 }
 
-export function randomSnowflakeID() {
-	const generator = new Generator(Temporal.Now.instant().epochMilliseconds);
-	return generator.generate() as bigint;
+export function generateID() {
+	return uuidv7();
 }
 
 // this is because reconcile tends to break things sometimes
