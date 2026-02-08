@@ -238,7 +238,7 @@ export function Timeframe(props: {
 				id: t.id,
 				name: t.name,
 				onClick: () => {
-					// currentTaskCtx?.selectTask(t.id);
+					currentTaskCtx?.selectTask(t.id);
 				},
 			}))}
 			duration={duration()}
