@@ -109,7 +109,6 @@ function usePercentileDuration(
 	);
 
 	createEffect(() => {
-		console.log("recompute", percentile());
 		calculate(tasks(), dependencies(), percentile());
 	});
 
@@ -127,19 +126,19 @@ function getTaskAnalysis(
 		ids.add(t.id);
 	}
 	let hidden = 0;
-	const indep: (typeof task.schema.infer)[] = [];
+	const independent: (typeof task.schema.infer)[] = [];
 	const dependent: (typeof task.schema.infer)[] = [];
 	for (const t of allTasks) {
 		if (!ids.has(t.parent_id)) {
 			if (t.timescale !== currentTimescale) {
 				hidden++;
 			}
-			indep.push(t);
+			independent.push(t);
 			continue;
 		}
 		dependent.push(t);
 	}
-	return { indep, dependent, hidden };
+	return { independent, dependent, hidden };
 }
 
 export function Timeframe(props: {
@@ -202,7 +201,7 @@ export function Timeframe(props: {
 	const percentile = createMemo(() => viewCtx?.state.percentile ?? 95);
 	const totalTaskDuration = usePercentileDuration(
 		percentile,
-		() => taskAnalysis().indep,
+		() => taskAnalysis().independent,
 		() => taskAnalysis().dependent,
 	);
 	const duration = createMemo(() => {

@@ -41,21 +41,6 @@ export function evalStats(taskIds: string[], action: Action) {
 	const tasks: Task[] = [];
 	getTaskBFS(tasks, taskIds);
 
-	if (taskIds.length > 1) {
-		const rootChildren: number[] = [];
-		for (let i = 0; i < taskIds.length; i++) {
-			rootChildren.push(i + 1);
-		}
-		tasks.splice(0, 0, {
-			pert: {
-				optimistic: 0.99,
-				expected: 0.999,
-				pessimistic: 1,
-			},
-			children: rootChildren,
-		});
-	}
-
 	const reqId = taskIds.join(",");
 	return new Promise<number>((res, rej) => {
 		pending.push({
@@ -69,6 +54,16 @@ export function evalStats(taskIds: string[], action: Action) {
 
 function getTaskBFS(result: Task[], ids: string[]) {
 	const queue: string[] = [...ids];
+	if (ids.length > 1) {
+		result.push({
+			pert: {
+				optimistic: 1,
+				expected: 1,
+				pessimistic: 1,
+			},
+			children: ids.map((_, i) => i + 1),
+		});
+	}
 	while (true) {
 		const id = queue.pop();
 		if (id === undefined) {
