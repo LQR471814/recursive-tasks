@@ -1,3 +1,12 @@
+import { v4 } from "uuid";
+
+// polyfill crypto.randomUUID because it doesn't exist in HTTP contexts.
+if (!crypto.randomUUID) {
+	// @ts-expect-error: the type definitions do not completely match up, but
+	// they are practically equivalent
+	crypto.randomUUID = v4;
+}
+
 /* @refresh reload */
 import "./index.css";
 import "temporal-polyfill/global";
