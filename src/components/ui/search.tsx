@@ -1,8 +1,7 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: lots of typescript shenanigans happening here
 
-import { createFilter } from "@kobalte/core";
 import type { Fn, Pipe, Tuples, Unions } from "hotscript";
-import { createMemo, createSignal } from "solid-js";
+import { createMemo } from "solid-js";
 import {
 	Combobox,
 	ComboboxContent,
@@ -30,32 +29,22 @@ export function Search<
 	labelField: LabelField;
 	onChange(result: T | null): void;
 }) {
-	const filter = createFilter({ sensitivity: "base", ignorePunctuation: true });
 	const selected = createMemo(() =>
 		props.options.find((o) => o[props.idField] === props.selectedId),
 	);
-	const optionSignal = createMemo(() => {
-		const [get, set] = createSignal(props.options);
-		return { get, set };
-	});
-	const onInputChange = (value: string) => {
-		optionSignal().set(
-			props.options.filter((option) =>
-				filter.contains(option[props.labelField as any] as any, value),
-			),
-		);
-	};
 	return (
 		<Combobox
 			name={props.name}
 			value={selected()}
-			options={optionSignal().get()}
+			options={props.options}
 			optionValue={props.idField}
+			optionTextValue={props.labelField as any}
 			optionLabel={props.labelField as any}
-			onInputChange={onInputChange}
 			onChange={props.onChange}
-			itemComponent={(p) => (
-				<ComboboxItem item={p.item}>{p.item.textValue}</ComboboxItem>
+			itemComponent={({ item }) => (
+				<ComboboxItem item={item}>
+					{(item.rawValue as any)[props.labelField]}
+				</ComboboxItem>
 			)}
 		>
 			<ComboboxTrigger>
