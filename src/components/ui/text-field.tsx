@@ -6,7 +6,7 @@ import type { AnyFieldApi, FieldApi } from "@tanstack/solid-form";
 import { cva } from "class-variance-authority";
 import type { ValidComponent } from "solid-js";
 import { mergeProps, Show, splitProps } from "solid-js";
-import { cn } from "~/lib/utils";
+import { cn } from "src/lib/utils";
 import { FieldInfo } from "../field-info";
 
 type TextFieldRootProps<T extends ValidComponent = "div"> =

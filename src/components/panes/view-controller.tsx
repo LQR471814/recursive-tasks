@@ -1,15 +1,15 @@
 import { useContext } from "solid-js";
-import { Button } from "~/components/ui/button";
-import * as Select from "~/components/ui/select";
+import { Button } from "src/components/ui/button";
+import * as Select from "src/components/ui/select";
 import {
 	Slider,
 	SliderFill,
 	SliderThumb,
 	SliderTrack,
-} from "~/components/ui/slider";
-import { TextField, TextFieldInput } from "~/components/ui/text-field";
-import { useCurrentTime, ViewContext } from "~/context/view";
-import * as timescales from "~/lib/timescales";
+} from "src/components/ui/slider";
+import { TextField, TextFieldInput } from "src/components/ui/text-field";
+import { useCurrentTime, ViewContext } from "src/context/view";
+import * as timescales from "src/lib/timescales";
 import { TimeDisplay } from "../time-display";
 
 const options = timescales.hierarchy

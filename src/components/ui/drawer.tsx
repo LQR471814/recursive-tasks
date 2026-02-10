@@ -9,7 +9,7 @@ import DrawerPrimitive from "@corvu/drawer";
 import type { Component, ComponentProps, JSX, ValidComponent } from "solid-js";
 import { splitProps } from "solid-js";
 
-import { cn } from "~/lib/utils";
+import { cn } from "src/lib/utils";
 
 const Drawer = DrawerPrimitive;
 

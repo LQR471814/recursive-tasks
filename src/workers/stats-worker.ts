@@ -1,4 +1,4 @@
-import { type Task, taskTimeDigest } from "~/lib/stats";
+import { type Task, taskTimeDigest } from "src/lib/stats";
 
 export type Action = {
 	type: "percentile";

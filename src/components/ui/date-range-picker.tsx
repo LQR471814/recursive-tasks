@@ -22,7 +22,7 @@ import {
 	DatePickerView,
 	DatePickerViewControl,
 	DatePickerViewTrigger,
-} from "~/components/ui/date-picker";
+} from "src/components/ui/date-picker";
 
 export function DateRange() {
 	return (

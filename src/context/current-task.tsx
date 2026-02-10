@@ -15,12 +15,12 @@ import {
 	ROOT_ID,
 	StatusType,
 	TimescaleType,
-} from "~/lib/constants";
+} from "src/lib/constants";
 import {
 	type Timescale,
 	type TimescaleInstance,
 	timescaleTypeOf,
-} from "~/lib/timescales";
+} from "src/lib/timescales";
 
 function currentTaskValue() {
 	const [shown, setShown] = createSignal<"selected" | "new_child" | "none">(

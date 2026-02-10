@@ -3,7 +3,7 @@ import ResizablePrimitive from "@corvu/resizable";
 import type { ValidComponent } from "solid-js";
 import { Show, splitProps } from "solid-js";
 
-import { cn } from "~/lib/utils";
+import { cn } from "src/lib/utils";
 
 type ResizableProps<T extends ValidComponent = "div"> = RootProps<T> & {
 	class?: string;

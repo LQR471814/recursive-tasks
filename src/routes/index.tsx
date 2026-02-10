@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/solid-router";
 import { HorizontalControlled } from "src/components/panes/horizontal-controlled";
 import { Properties } from "src/components/panes/properties";
-import { VerticalTimeframes } from "~/components/panes/vertical";
-import { ViewController } from "~/components/panes/view-controller";
-import { Separator } from "~/components/ui/separator";
-import { CurrentTaskProvider } from "~/context/current-task";
-import { ViewProvider } from "~/context/view";
+import { VerticalTimeframes } from "src/components/panes/vertical";
+import { ViewController } from "src/components/panes/view-controller";
+import { Separator } from "src/components/ui/separator";
+import { CurrentTaskProvider } from "src/context/current-task";
+import { ViewProvider } from "src/context/view";
 
 export const Route = createFileRoute("/")({
 	component: RouteComponent,

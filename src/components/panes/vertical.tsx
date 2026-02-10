@@ -1,6 +1,6 @@
 import { useCurrentTime } from "src/context/view";
-import { Timeframe } from "~/components/timeframe";
-import { TaskChipContext } from "~/context/task-chip";
+import { Timeframe } from "src/components/timeframe";
+import { TaskChipContext } from "src/context/task-chip";
 import {
 	day,
 	daypart,
@@ -10,8 +10,8 @@ import {
 	tenyear,
 	week,
 	year,
-} from "~/lib/timescales";
-import { cn } from "~/lib/utils";
+} from "src/lib/timescales";
+import { cn } from "src/lib/utils";
 
 export function VerticalTimeframes(props: { class?: string }) {
 	const currentTime = useCurrentTime();

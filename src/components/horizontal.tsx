@@ -1,7 +1,7 @@
 import { createMemo, For } from "solid-js";
-import { Timeframe } from "~/components/timeframe";
-import { childInstancesOf, type Timescale } from "~/lib/timescales";
-import { cn, now } from "~/lib/utils";
+import { Timeframe } from "src/components/timeframe";
+import { childInstancesOf, type Timescale } from "src/lib/timescales";
+import { cn, now } from "src/lib/utils";
 
 export function Horizontal(props: {
 	parent: Timescale;

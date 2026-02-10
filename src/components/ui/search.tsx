@@ -8,7 +8,7 @@ import {
 	ComboboxInput,
 	ComboboxItem,
 	ComboboxTrigger,
-} from "~/components/ui/combobox";
+} from "src/components/ui/combobox";
 
 interface IsValidLabel<T extends Record<string, unknown>> extends Fn {
 	return: T[this["arg0"]] extends string | number | Element ? true : false;

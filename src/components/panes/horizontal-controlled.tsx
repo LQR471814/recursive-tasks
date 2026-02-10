@@ -1,7 +1,7 @@
 import { createMemo, useContext } from "solid-js";
-import { TaskChipContext } from "~/context/task-chip";
-import { useCurrentTime, ViewContext } from "~/context/view";
-import * as timescales from "~/lib/timescales";
+import { TaskChipContext } from "src/context/task-chip";
+import { useCurrentTime, ViewContext } from "src/context/view";
+import * as timescales from "src/lib/timescales";
 import { Horizontal } from "../horizontal";
 
 export function HorizontalControlled() {

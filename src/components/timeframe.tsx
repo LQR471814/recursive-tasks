@@ -1,116 +1,16 @@
-import { debounce } from "@tanstack/pacer";
 import { and, eq, gte, lt, not } from "@tanstack/solid-db";
 import { createDroppable } from "@thisbeyond/solid-dnd";
-import {
-	type Accessor,
-	createEffect,
-	createMemo,
-	createSignal,
-	For,
-	Match,
-	Show,
-	Switch,
-	useContext,
-} from "solid-js";
+import { createMemo, For, Match, Show, Switch, useContext } from "solid-js";
 import { ViewContext } from "src/context/view";
 import { TimescaleType } from "src/lib/constants";
 import type { task } from "src/lib/trailbase";
-import { evalStats } from "src/workers/stats-worker.client";
-import { CurrentTaskContext, type DroppableData } from "~/context/current-task";
-import { tasksCollection } from "~/lib/collections";
-import { type Timescale, timescaleTypeOf } from "~/lib/timescales";
-import { cn, useLiveQueryNoReconcile } from "~/lib/utils";
+import { CurrentTaskContext, type DroppableData } from "src/context/current-task";
+import { tasksCollection } from "src/lib/collections";
+import { type Timescale, timescaleTypeOf } from "src/lib/timescales";
+import { cn, useLiveQueryNoReconcile } from "src/lib/utils";
 import { TaskChip } from "./task";
 import { Button } from "./ui/button";
-
-const cachedPercentiles = new Map<string, number | Promise<number>>();
-
-function usePercentileDuration(
-	percentile: Accessor<number>,
-	tasks: Accessor<
-		{
-			id: string;
-			optimistic: number;
-			expected: number;
-			pessimistic: number;
-		}[]
-	>,
-	dependencies: Accessor<
-		{
-			id: string;
-			optimistic: number;
-			expected: number;
-			pessimistic: number;
-		}[]
-	>,
-) {
-	const [state, setState] = createSignal<
-		{ duration: number; error: null } | { duration: null; error: Error } | null
-	>(null);
-
-	const calculate = debounce(
-		(
-			tasks: {
-				id: string;
-				optimistic: number;
-				expected: number;
-				pessimistic: number;
-			}[],
-			dependencies: {
-				id: string;
-				optimistic: number;
-				expected: number;
-				pessimistic: number;
-			}[],
-			p: number,
-		) => {
-			let hash = "";
-			for (const t of tasks) {
-				hash += `${p}|${t.optimistic}:${t.expected}:${t.pessimistic},`;
-			}
-			for (const t of dependencies) {
-				hash += `|${t.optimistic}:${t.expected}:${t.pessimistic},`;
-			}
-			const cached = cachedPercentiles.get(hash);
-			if (typeof cached === "number") {
-				setState({ duration: cached, error: null });
-				return;
-			}
-
-			setState(null);
-
-			const promise =
-				cached instanceof Promise
-					? cached
-					: evalStats(
-							tasks.map((t) => t.id),
-							{
-								type: "percentile",
-								percentile: p,
-							},
-						);
-
-			cachedPercentiles.set(hash, promise);
-
-			promise
-				.then((dur) => {
-					setState({ duration: dur, error: null });
-					cachedPercentiles.set(hash, dur);
-				})
-				.catch((err) => {
-					console.error(err);
-					setState({ duration: null, error: err });
-				});
-		},
-		{ wait: 100 },
-	);
-
-	createEffect(() => {
-		calculate(tasks(), dependencies(), percentile());
-	});
-
-	return state;
-}
+import { usePercentileDuration } from "src/lib/use-percentile";
 
 function getTaskAnalysis(
 	currentTimescale: TimescaleType,
@@ -239,7 +139,7 @@ export function Timeframe(props: {
 			}))}
 			duration={duration()}
 			hiddenTasks={taskAnalysis().hidden}
-			// hiddenTasksDuration={otherTaskDuration.duration()}
+		// hiddenTasksDuration={otherTaskDuration.duration()}
 		/>
 	);
 }

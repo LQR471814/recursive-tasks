@@ -5,8 +5,8 @@ import {
 	useContext,
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import { durationOf, type Timescale, week } from "~/lib/timescales";
-import { now } from "~/lib/utils";
+import { durationOf, type Timescale, week } from "src/lib/timescales";
+import { now } from "src/lib/utils";
 
 export function useCurrentTime() {
 	const ctx = useContext(ViewContext);
