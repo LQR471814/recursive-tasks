@@ -56,16 +56,26 @@ export function TaskChip(props: {
 	const color = createMemo(() => {
 		switch (props.status) {
 			case StatusType.pending:
-				return "bg-gray-500";
+				return "bg-primary";
 			case StatusType.completed:
-				return "bg-green-500";
+				return "bg-green-600";
 			case StatusType.fixed:
 				return "bg-gray-300";
 		}
 	});
+	const textColor = createMemo(() => {
+		switch (props.status) {
+			case StatusType.pending:
+				return "text-primary";
+			case StatusType.completed:
+				return "text-green-600";
+			case StatusType.fixed:
+				return "text-gray-300";
+		}
+	});
 	return (
 		<Display
-			class={cn("draggable", props.class)}
+			class={cn("draggable", props.class, textColor())}
 			name={props.name}
 			color={color()}
 			onClick={props.onClick}
