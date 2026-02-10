@@ -10,14 +10,13 @@ import { showToast } from "src/components/ui/toast";
 import { tasksCollection } from "src/lib/collections";
 import type { task } from "src/lib/trailbase";
 import { generateID } from "src/lib/utils";
-import { ROOT_ID } from "~/lib/constants";
+import { ROOT_ID, StatusType } from "~/lib/constants";
 import {
-	ImplementationType,
 	type Timescale,
 	type TimescaleInstance,
-	TimescaleType,
 	timescaleTypeOf,
 } from "~/lib/timescales";
+import { ImplementationType, TimescaleType } from "~/lib/constants";
 
 function currentTaskValue() {
 	const [shown, setShown] = createSignal<"selected" | "new_child" | "none">(
@@ -38,6 +37,7 @@ function currentTaskValue() {
 				timescale: TimescaleType.week,
 				parent_id: ROOT_ID,
 				assigned_to: undefined,
+				status: StatusType.pending,
 			} as typeof task.schema.infer,
 			onSubmit: onsubmit,
 		}));

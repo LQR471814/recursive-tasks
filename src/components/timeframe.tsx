@@ -17,14 +17,11 @@ import type { task } from "src/lib/trailbase";
 import { evalStats } from "src/workers/stats-worker.client";
 import { CurrentTaskContext, type DroppableData } from "~/context/current-task";
 import { tasksCollection } from "~/lib/collections";
-import {
-	type Timescale,
-	TimescaleType,
-	timescaleTypeOf,
-} from "~/lib/timescales";
+import { type Timescale, timescaleTypeOf } from "~/lib/timescales";
 import { cn, useLiveQueryNoReconcile } from "~/lib/utils";
 import { TaskChip } from "./task";
 import { Button } from "./ui/button";
+import { TimescaleType } from "src/lib/constants";
 
 const cachedPercentiles = new Map<string, number | Promise<number>>();
 
@@ -86,12 +83,12 @@ function usePercentileDuration(
 				cached instanceof Promise
 					? cached
 					: evalStats(
-							tasks.map((t) => t.id),
-							{
-								type: "percentile",
-								percentile: p,
-							},
-						);
+						tasks.map((t) => t.id),
+						{
+							type: "percentile",
+							percentile: p,
+						},
+					);
 
 			cachedPercentiles.set(hash, promise);
 
@@ -242,7 +239,7 @@ export function Timeframe(props: {
 			}))}
 			duration={duration()}
 			hiddenTasks={taskAnalysis().hidden}
-			// hiddenTasksDuration={otherTaskDuration.duration()}
+		// hiddenTasksDuration={otherTaskDuration.duration()}
 		/>
 	);
 }
@@ -306,7 +303,7 @@ function Display(props: {
 					＋
 				</Button>
 			</div>
-			<div class="flex flex-col gap-1 px-1 py-1 pb-8">
+			<div class="flex flex-col gap-1 p-1">
 				<For each={props.tasks}>
 					{(task) => (
 						<TaskChip

@@ -1,2 +1,2 @@
 import { type } from "arktype"
-export const schema = type({"assigned_to":"string | undefined","comments":"string","expected":"number","id":"string","implementation":"number","name":"string","optimistic":"number","parent_id":"string","pessimistic":"number","timeframe_start":"number","timescale":"number"})
+export const schema = type({"assigned_to":"string | undefined","comments":"string","expected":"number","id":"string","implementation":"number","name":"string","optimistic":"number","parent_id":"string","pessimistic":"number","status":"number","timeframe_start":"number","timescale":"number"})
