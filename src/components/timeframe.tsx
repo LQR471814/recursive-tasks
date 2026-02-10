@@ -13,6 +13,7 @@ import {
 	useContext,
 } from "solid-js";
 import { ViewContext } from "src/context/view";
+import { TimescaleType } from "src/lib/constants";
 import type { task } from "src/lib/trailbase";
 import { evalStats } from "src/workers/stats-worker.client";
 import { CurrentTaskContext, type DroppableData } from "~/context/current-task";
@@ -21,7 +22,6 @@ import { type Timescale, timescaleTypeOf } from "~/lib/timescales";
 import { cn, useLiveQueryNoReconcile } from "~/lib/utils";
 import { TaskChip } from "./task";
 import { Button } from "./ui/button";
-import { TimescaleType } from "src/lib/constants";
 
 const cachedPercentiles = new Map<string, number | Promise<number>>();
 
@@ -83,12 +83,12 @@ function usePercentileDuration(
 				cached instanceof Promise
 					? cached
 					: evalStats(
-						tasks.map((t) => t.id),
-						{
-							type: "percentile",
-							percentile: p,
-						},
-					);
+							tasks.map((t) => t.id),
+							{
+								type: "percentile",
+								percentile: p,
+							},
+						);
 
 			cachedPercentiles.set(hash, promise);
 
@@ -239,7 +239,7 @@ export function Timeframe(props: {
 			}))}
 			duration={duration()}
 			hiddenTasks={taskAnalysis().hidden}
-		// hiddenTasksDuration={otherTaskDuration.duration()}
+			// hiddenTasksDuration={otherTaskDuration.duration()}
 		/>
 	);
 }

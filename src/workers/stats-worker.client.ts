@@ -1,6 +1,6 @@
 import { tasksCollection } from "src/lib/collections";
-import type { Task } from "src/lib/stats";
 import { ImplementationType } from "src/lib/constants";
+import type { Task } from "src/lib/stats";
 import type { Action, Request } from "./stats-worker";
 
 const worker = new Worker(new URL("./stats-worker.ts", import.meta.url), {
@@ -77,16 +77,16 @@ function getTaskBFS(result: Task[], ids: string[]) {
 			pert:
 				task.implementation === ImplementationType.hours
 					? {
-						pessimistic: task.pessimistic,
-						expected: task.expected,
-						optimistic: task.optimistic,
-					}
+							pessimistic: task.pessimistic,
+							expected: task.expected,
+							optimistic: task.optimistic,
+						}
 					: // convert percentage to proportion
-					{
-						pessimistic: task.pessimistic / 100,
-						expected: task.expected / 100,
-						optimistic: task.optimistic / 100,
-					},
+						{
+							pessimistic: task.pessimistic / 100,
+							expected: task.expected / 100,
+							optimistic: task.optimistic / 100,
+						},
 			children: [],
 		};
 		for (const [, row] of tasksCollection.entries()) {

@@ -1,9 +1,9 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: lots of typescript shenanigans happening here
 
 import { useLiveQuery } from "@tanstack/solid-db";
-import { Match, Show, Switch, useContext, type JSX } from "solid-js";
+import { type JSX, Match, Show, Switch, useContext } from "solid-js";
 import { tasksCollection } from "src/lib/collections";
-import { ROOT_ID, StatusType } from "src/lib/constants";
+import { ImplementationType, ROOT_ID, StatusType } from "src/lib/constants";
 import { type Timescale, timescaleFromType } from "src/lib/timescales";
 import { asInstant, cn, currentTz } from "src/lib/utils";
 import {
@@ -13,13 +13,12 @@ import {
 import { TimeDisplay } from "../time-display";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Label } from "../ui/label";
 import { Search } from "../ui/search";
+import * as Select from "../ui/select";
 import { Separator } from "../ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { FormMultilineText, FormTextField } from "../ui/text-field";
-import { ImplementationType } from "src/lib/constants";
-import * as Select from "../ui/select";
-import { Label } from "../ui/label";
 
 function IconText(props: {
 	class?: string;
