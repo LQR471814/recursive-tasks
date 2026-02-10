@@ -1,16 +1,19 @@
 import { and, eq, gte, lt, not } from "@tanstack/solid-db";
 import { createDroppable } from "@thisbeyond/solid-dnd";
 import { createMemo, For, Match, Show, Switch, useContext } from "solid-js";
+import {
+	CurrentTaskContext,
+	type DroppableData,
+} from "src/context/current-task";
 import { ViewContext } from "src/context/view";
-import { TimescaleType } from "src/lib/constants";
-import type { task } from "src/lib/trailbase";
-import { CurrentTaskContext, type DroppableData } from "src/context/current-task";
 import { tasksCollection } from "src/lib/collections";
+import { TimescaleType } from "src/lib/constants";
 import { type Timescale, timescaleTypeOf } from "src/lib/timescales";
-import { cn, useLiveQueryNoReconcile } from "src/lib/utils";
-import { TaskChip } from "./task";
-import { Button } from "./ui/button";
+import type { task } from "src/lib/trailbase";
 import { usePercentileDuration } from "src/lib/use-percentile";
+import { cn, useLiveQueryNoReconcile } from "src/lib/utils";
+import { TaskChip } from "./task-chip";
+import { Button } from "./ui/button";
 
 function getTaskAnalysis(
 	currentTimescale: TimescaleType,

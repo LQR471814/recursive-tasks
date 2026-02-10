@@ -2,14 +2,14 @@
 
 import { useLiveQuery } from "@tanstack/solid-db";
 import { type JSX, Match, Show, Switch, useContext } from "solid-js";
-import { tasksCollection } from "src/lib/collections";
-import { ImplementationType, ROOT_ID, StatusType } from "src/lib/constants";
-import { type Timescale, timescaleFromType } from "src/lib/timescales";
-import { asInstant, cn, currentTz } from "src/lib/utils";
 import {
 	CurrentTaskContext,
 	type CurrentTaskValue,
 } from "src/context/current-task";
+import { tasksCollection } from "src/lib/collections";
+import { ImplementationType, ROOT_ID, StatusType } from "src/lib/constants";
+import { type Timescale, timescaleFromType } from "src/lib/timescales";
+import { asInstant, cn, currentTz } from "src/lib/utils";
 import { TimeDisplay } from "../time-display";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
